@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<content id="bosota_warm_diag" name="Boso Ta - DIAGNOSE v2 (nicht spielen)" description="Diagnose-Build v2: Boso Ta vor Ort extrem tief (pitch 0.5-0.6), Boso Ta im Funk extrem dumpf (lowpass 0.03). Nur zum Hoertest, danach entfernen." author="Slovi" version="2" date="2026-10-22" enabled="1" save="0">
-  <text language="44" name="Boso Ta - DIAGNOSTIC v2 (do not play)" description="Diagnostic build v2: Boso Ta in person extremely deep (pitch 0.5-0.6), Boso Ta on comm extremely muffled (lowpass 0.03). Listening test only, remove afterwards."/>
-  <text language="49" name="Boso Ta – DIAGNOSE v2 (nicht spielen)" description="Diagnose-Build v2: Boso Ta vor Ort extrem tief (pitch 0.5–0.6), Boso Ta im Funk extrem dumpf (Tiefpass 0.03). Nur zum Hörtest, danach entfernen."/>
+<content id="bosota_warm_diag" name="Boso Ta - DIAGNOSE v6 Umleitung (nicht spielen)" description="Diagnose-Build v6: Flugschul-Tutor auf fremde Audiodateien umgeleitet (Betty bzw. Boso Ta). Nur zum Hoertest, danach entfernen." author="Slovi" version="6" date="2026-10-22" enabled="1" save="0">
+  <text language="44" name="Boso Ta - DIAGNOSTIC v6 redirect (do not play)" description="Diagnostic build v6: flight-school tutor redirected to foreign audio files (Betty or Boso Ta). Listening test only, remove afterwards."/>
+  <text language="49" name="Boso Ta – DIAGNOSE v6 Umleitung (nicht spielen)" description="Diagnose-Build v6: Flugschul-Tutor auf fremde Audiodateien umgeleitet (Betty bzw. Boso Ta). Nur zum Hörtest, danach entfernen."/>
 </content>

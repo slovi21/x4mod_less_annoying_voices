@@ -22,7 +22,8 @@ for _stream in (sys.stdout, sys.stderr):
 
 ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_GAME_DIR = r"C:\Steam\steamapps\common\X4 Foundations"
-PREFIX = "bosota_warm_"
+PREFIX = "bosota_"   # alle Varianten dieses Projekts (bosota_warm_*, bosota_voice_*) – es darf nur eine aktiv sein
+CFG = json.loads((ROOT / "config" / "variants.json").read_text(encoding="utf-8"))
 
 
 def _clear_readonly_and_retry(func, path, _exc):
@@ -58,12 +59,12 @@ def rmtree_retry(path, tries=5, delay=0.5):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("variant", nargs="?", choices=["de", "en", "test"])
+    ap.add_argument("variant", nargs="?", choices=sorted(CFG["variants"]))
     ap.add_argument("--game-dir", default=os.environ.get("X4_GAME_DIR", DEFAULT_GAME_DIR))
     ap.add_argument("--remove", action="store_true", help="nur entfernen, nichts installieren")
     args = ap.parse_args()
     if not args.variant and not args.remove:
-        ap.error("Variante (de|en|test) oder --remove angeben")
+        ap.error("Variante (" + "|".join(sorted(CFG["variants"])) + ") oder --remove angeben")
 
     ext_root = Path(args.game_dir) / "extensions"
     if not ext_root.is_dir():
@@ -76,13 +77,24 @@ def main():
 
     if args.remove:
         return
-    cfg = json.loads((ROOT / "config" / "variants.json").read_text(encoding="utf-8"))
-    mod_id = cfg["variants"][args.variant]["id"]
+    v = CFG["variants"][args.variant]
+    mod_id = v["id"]
     src = ROOT / "dist" / mod_id
     if not src.is_dir():
         sys.exit(f"FEHLER: {src} fehlt – zuerst: python -I tools/build_mod.py")
     dst = ext_root / mod_id
     shutil.copytree(src, dst)
+    if v.get("kind") == "audio":
+        # Audiodateien liegen nicht in dist/ (nicht im Repo), sondern in build/audio/<variante>/
+        audio = ROOT / "build" / "audio" / v["audio_variant"]
+        files = sorted(audio.glob("*.ogg")) if audio.is_dir() else []
+        if not files:
+            sys.exit(f"FEHLER: keine Audiodateien in {audio} – zuerst tools/process_audio.py --variant {v['audio_variant']} ausführen")
+        voice_dir = dst / "voice" / "10201" / "normal"
+        voice_dir.mkdir(parents=True)
+        for f in files:
+            shutil.copyfile(f, voice_dir / f.name)
+        print(f"Audio:       {len(files)} Dateien nach {voice_dir}")
     clear_readonly_tree(dst)  # sonst erbt das Ziel den OneDrive-Schreibschutz der Quelle
     print(f"installiert: {dst}")
     print("Im Spiel: Hauptmenü > Erweiterungen > Eintrag muss sichtbar und aktiv sein.")

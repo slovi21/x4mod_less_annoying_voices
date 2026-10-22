@@ -38,7 +38,28 @@ def effect_children(v, indent):
     return lines
 
 
+def build_redirect_diff(v, cfg):
+    """Audio-Variante: alle Boso-Ta-Einträge auf den Audio-Ordner der Extension umleiten.
+    Nachgewiesen (Diagnose v6): die Engine lädt extensions\\<id>\\voice\\10201\\normal\\<zeile>.ogg wörtlich,
+    ohne Sprachsuffix. Alle Kontexte (auch comm) nutzen denselben bearbeiteten normal-Satz."""
+    target = f"extensions\\{v['id']}\\voice\\10201\\normal"
+    out = [
+        '<?xml version="1.0" encoding="utf-8"?>',
+        "<diff>",
+        f"  <!-- generiert von tools/build_mod.py – Audio-Variante {v['id']} (Bearbeitung: {v['audio_variant']}) -->",
+        "  <!-- Audiodateien: tools/install_mod.py kopiert build/audio/<variante>/*.ogg nach voice/10201/normal/ -->",
+    ]
+    for sound_id in cfg["boso_ta_ids"]:
+        out.append(f"  <replace sel=\"/soundlibrary/sound[@id='{sound_id}']/sample\">")
+        out.append(f'    <sample start="{target}"/>')
+        out.append("  </replace>")
+    out.append("</diff>")
+    return "\n".join(out) + "\n"
+
+
 def build_diff(v, cfg):
+    if v.get("kind") == "audio":
+        return build_redirect_diff(v, cfg)
     ids = dict(cfg["boso_ta_ids"])
     if v.get("include_betty"):
         ids.update(cfg["betty_test_ids"])
@@ -81,7 +102,7 @@ def build_content(v, cfg):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--only", choices=["de", "en", "test"], help="nur diese Variante bauen")
+    ap.add_argument("--only", help="nur diese Variante bauen (Schlüssel aus config/variants.json)")
     args = ap.parse_args()
 
     cfg = json.loads(CFG_PATH.read_text(encoding="utf-8"))
@@ -94,8 +115,14 @@ def main():
         (target / "libraries").mkdir(parents=True, exist_ok=True)
         (target / "content.xml").write_text(build_content(v, cfg), encoding="utf-8")
         (target / "libraries" / "sound_library.xml").write_text(build_diff(v, cfg), encoding="utf-8")
-        n_ids = len(cfg["boso_ta_ids"]) + (len(cfg["betty_test_ids"]) if v.get("include_betty") else 0)
-        print(f"gebaut: {target.relative_to(ROOT)}  (pitch={v['pitch']}, lowpass={v['lowpass']}, {n_ids} Sound-IDs)")
+        if v.get("kind") == "audio":
+            audio = ROOT / "build" / "audio" / v["audio_variant"]
+            n_audio = len(list(audio.glob("*.ogg"))) if audio.is_dir() else 0
+            hint = "" if n_audio else "  ACHTUNG: noch keine Audiodateien – tools/process_audio.py ausführen"
+            print(f"gebaut: {target.relative_to(ROOT)}  (Audio-Umleitung, {len(cfg['boso_ta_ids'])} Sound-IDs, {n_audio} ogg in build/audio/{v['audio_variant']}){hint}")
+        else:
+            n_ids = len(cfg["boso_ta_ids"]) + (len(cfg["betty_test_ids"]) if v.get("include_betty") else 0)
+            print(f"gebaut: {target.relative_to(ROOT)}  (pitch={v['pitch']}, lowpass={v['lowpass']}, {n_ids} Sound-IDs)")
 
 
 if __name__ == "__main__":

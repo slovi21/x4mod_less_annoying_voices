@@ -2,3 +2,5 @@
 build/
 __pycache__/
 *.pyc
+# Diagnose-Audio liegt nur im Spielordner, nie im Repo
+diag/**/voice*/

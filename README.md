@@ -2,7 +2,9 @@
 
 Mod für **X4: Foundations 9.00**, die die Stimme des Boronen-Beraters **Boso Ta** erträglich macht. Ergebnis nach sieben Hörrunden: eine Oktave tiefer, fremder Klang („Alien"), Mitten-Filter für Verständlichkeit, Gespräche ohne Raumverarbeitung. Tempo, Pausen und Mundbewegung bleiben exakt wie im Original, weil die Tonhöhe tempoerhaltend (Rubberband) geändert wird.
 
-Die Mod enthält **keine Egosoft-Audiodateien im Repository**. Die bearbeiteten Dateien werden lokal aus deiner Spielinstallation erzeugt (ca. 10 Minuten) und beim Installieren in den Spielordner kopiert. Deinstallation = Ordner löschen. Spielstände werden nicht als modifiziert markiert (`save="0"`).
+Die Mod enthält **keine Egosoft-Audiodateien im Repository**. Die bearbeiteten Dateien werden lokal aus deiner Spielinstallation erzeugt (ca. 10 Minuten) und beim Installieren in den Spielordner kopiert. Deinstallation = Ordner löschen.
+
+> **Wichtig: Das Spiel gilt mit dieser Mod als „modifiziert"**, wie mit jeder Mod ohne Egosoft-Signatur. Folgen: keine Steam-Erfolge, keine Online-Ventures, und jeder Spielstand, der mit aktiver Mod gespeichert wird, behält dieses Kennzeichen dauerhaft, auch nach Entfernen der Mod. Das `save="0"` in der `content.xml` ändert daran nichts; es bewirkt nur, dass der Spielstand die Mod nicht als Voraussetzung einträgt, man sie also ohne Warnung wieder entfernen kann.
 
 > Boso Ta spricht über das Stimm-Set **10201**. Der einzige weitere Nutzer ist der Boronen-Fraktionsvertreter (derselbe Sprecher), der die Stimme mitbekommt. Zufalls-NPCs sind nicht betroffen.
 
@@ -56,6 +58,14 @@ Eine englische Audio-Variante gibt es nicht; das Rezept ist identisch, nur mit `
 ## Eigene Abstimmung
 
 `tools/process_audio.py --list` zeigt alle Filterketten (tief, Computer, Ringmodulation, Doppelstimme, Alien, Flüstern, Unterwasser, Mitten-Fokus, Oktavstufen). Für Hörproben `--files <zeilen-id,...> --wav` verwenden; `tools/pitch_flatten.py` (Praat, eigene Umgebung unter `build/venv`) staucht vorab die Intonationsspitzen. Pegel nur im Spiel beurteilen: Eine dunkle Stimme klingt am PC gleich laut und geht im Spielmix trotzdem unter.
+
+## Weitergabe (Nexus, ModDB, Steam Workshop)
+
+Wer die Mod fertig weitergibt, verpackt den **installierten** Ordner `extensions\bosota_voice_alien\` (XML plus die 2 324 Tondateien, ca. 93 MB). Empfänger brauchen dann **weder Python noch ffmpeg**: Ordner nach `<Spiel>\extensions\` kopieren, fertig. Der Ordnername muss erhalten bleiben, denn die Umleitung in `sound_library.xml` nennt ihn ausdrücklich (`extensions\bosota_voice_alien\voice\…`).
+
+- **Nexus Mods / ModDB:** ZIP des Ordners hochladen, Beschreibung aus `docs/WIE-FUNKTIONIERT-DIE-MOD.md` übernehmen, den Hinweis „Spiel gilt als modifiziert" nicht vergessen.
+- **Steam Workshop:** Upload über Egosofts „X Tools" (kostenlos in der Steam-Bibliothek unter *Werkzeuge*; enthält das Workshop-Werkzeug). Achtung: Der Workshop installiert Mods unter einem eigenen Namen `ws_<Nummer>`. Dadurch stimmt der Pfad in der Umleitung nicht mehr. Für eine Workshop-Fassung muss nach dem ersten Upload die Nummer bekannt sein und ein zweiter Build mit `id="ws_<Nummer>"` und entsprechend angepasstem Pfad erzeugt werden (Ordnername, `content.xml` und Umleitungsziel müssen übereinstimmen).
+- **Rechtliches:** Die Tondateien sind bearbeitete Egosoft-Aufnahmen. Private Nutzung ist unkritisch; eine Veröffentlichung ist eine Grauzone, auch wenn vergleichbare Stimm-Mods seit Jahren auf Nexus stehen. Vor einem Workshop-Upload Egosofts Modding-Regeln im Forum prüfen.
 
 ## Fehlersuche
 

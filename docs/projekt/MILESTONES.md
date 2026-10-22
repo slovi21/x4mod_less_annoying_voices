@@ -1,6 +1,6 @@
 # Milestones – Boso Ta voice mod for X4: Foundations
 
-Goal: Boso Ta's voice stops being annoying while his dialogue stays intelligible and in sync. Started 2026-10-22 from the research handoff in `docs/X4_Boso_Ta_Voice_Mod_Handoff.md`.
+Goal: Boso Ta's voice stops being annoying while his dialogue stays intelligible and in sync. Started 2026-10-22 from a German research handoff (see `docs/HISTORY.md`).
 
 | # | Milestone (outcome) | Acceptance criterion (checkable from outside) | Status |
 |---|---|---|---|

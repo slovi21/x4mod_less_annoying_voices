@@ -1,47 +1,23 @@
 {
   "_doc": [
     "Variant definitions. After a change: python -I tools/build_mod.py  and  python -I tools/validate_mod.py",
-    "kind=audio ('alien' German, 'alien_en' English): replaces Boso Ta's audio through a redirect; the audio is produced locally with tools/process_audio.py (see audio_recipe) and lives in build/audio/<audio_variant>/.",
-    "kind=effects ('de', 'en'): engine effects in sound_library.xml only. pitch = resampling factor (tempo changes with it), lowpass = engine scale 0..1. Not sufficient for the author; kept as a lightweight alternative.",
-    "sound_attr_ops: attributes on the sound entries. noocclusion=true prevents muffling by geometry (Boso sits behind glass); is3d=0 plays conversations without positional audio so head orientation does not matter.",
-    "Sound id map: true = the base entry already has <effects>; false = <effects> is created."
+    "Every variant redirects Boso Ta's six sound entries to extensions\\<id>\u000boiceB01\normal; the audio is produced locally (see audio_recipe) into build/audio/<audio_variant>/ and copied by tools/install_mod.py.",
+    "will / alien_ws: German, text-to-speech (ElevenLabs Will, Eleven v4 Turbo) + will_dark. alien: German, processed originals (no account needed). alien_en / alien_en_ws: English, processed originals at half strength.",
+    "sound_attr_ops: noocclusion=true prevents muffling by geometry (Boso sits behind glass); is3d=0 plays conversations without positional audio so head orientation does not matter."
   ],
   "author": "Slovi",
   "version": "100",
-  "boso_ta_ids": {
-    "10201_normal": false,
-    "10201_normal_npc": false,
-    "10201_comm": false,
-    "10201_comm_signalleak": false,
-    "10201_comm_npc": false,
-    "10201_comm_broadcast": false
-  },
+  "boso_ta_ids": [
+    "10201_normal",
+    "10201_normal_npc",
+    "10201_comm",
+    "10201_comm_signalleak",
+    "10201_comm_npc",
+    "10201_comm_broadcast"
+  ],
   "variants": {
-    "de": {
-      "id": "bosota_warm_de",
-      "name_en": "Boso Ta - Warmer Voice (DE variant: strong)",
-      "name_de": "Boso Ta – wärmere Stimme (DE-Variante: stark)",
-      "desc_en": "Deeper, warmer voice for Boso Ta (voice set 10201) via engine effects only. Tuned for the German voice track. No audio files changed.",
-      "desc_de": "Tiefere, wärmere Stimme für Boso Ta (Stimm-Set 10201) nur über Engine-Effekte. Abgestimmt auf die deutsche Sprachspur. Keine Audiodateien geändert.",
-      "pitch": 0.75,
-      "lowpass": 0.2,
-      "reverb": null,
-      "include_betty": false
-    },
-    "en": {
-      "id": "bosota_warm_en",
-      "name_en": "Boso Ta - Warmer Voice (EN variant: medium)",
-      "name_de": "Boso Ta – wärmere Stimme (EN-Variante: mittel)",
-      "desc_en": "Deeper, warmer voice for Boso Ta (voice set 10201) via engine effects only. Tuned for the English voice track. No audio files changed.",
-      "desc_de": "Tiefere, wärmere Stimme für Boso Ta (Stimm-Set 10201) nur über Engine-Effekte. Abgestimmt auf die englische Sprachspur. Keine Audiodateien geändert.",
-      "pitch": 0.891,
-      "lowpass": 0.35,
-      "reverb": null,
-      "include_betty": false
-    },
     "alien": {
       "id": "bosota_voice_alien",
-      "kind": "audio",
       "audio_variant": "d12_alien_mid_g9",
       "name_en": "Boso Ta - less annoying VOICE (DE)",
       "name_de": "Boso Ta – less annoying VOICE (DE)",
@@ -76,7 +52,6 @@
     },
     "alien_en": {
       "id": "bosota_voice_alien_en",
-      "kind": "audio",
       "audio_variant": "alien_mid_50_g4",
       "name_en": "Boso Ta - less annoying VOICE (EN)",
       "name_de": "Boso Ta – less annoying VOICE (EN)",
@@ -111,7 +86,6 @@
     },
     "alien_ws": {
       "id": "ws_3824406333",
-      "kind": "audio",
       "audio_variant": "will_dark_g6",
       "name_en": "Boso Ta - new VOICE Will (DE)",
       "name_de": "Boso Ta – neue Stimme Will (DE)",
@@ -148,7 +122,6 @@
     },
     "will": {
       "id": "bosota_voice_will_de",
-      "kind": "audio",
       "audio_variant": "will_dark_g6",
       "name_en": "Boso Ta - new VOICE Will (DE)",
       "name_de": "Boso Ta – neue Stimme Will (DE)",
@@ -184,7 +157,6 @@
     },
     "alien_en_ws": {
       "id": "ws_3824446410",
-      "kind": "audio",
       "audio_variant": "alien_mid_50_g4",
       "name_en": "Boso Ta - less annoying VOICE (EN)",
       "name_de": "Boso Ta – less annoying VOICE (EN)",

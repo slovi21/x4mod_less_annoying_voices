@@ -1,8 +1,7 @@
-"""Speech-to-speech conversion of Boso Ta's lines with the ElevenLabs Voice Changer.
+"""Text-to-speech generation of Boso Ta's lines with ElevenLabs.
 
-Each original recording is converted into another voice; timing, pauses and intonation are kept, so lip sync
-and dialogue flow stay intact. The output goes through the usual pipeline afterwards
-(tools/process_audio.py with --src-ext wav for loudness, optional colouring and gain).
+Every line is spoken from the game text (page 10201 of the text file holds each line under the id of its audio
+file). The WAVs then go through tools/process_audio.py (--src-ext wav) for colouring, loudness and gain.
 
 API key: environment variable ELEVENLABS_API_KEY, or the file %USERPROFILE%\\.elevenlabs_key (plain text,
 one line). The key is never printed.
@@ -75,71 +74,6 @@ def cmd_voices(args):
     print(f"{'name':14s} {'voice_id':20s}  {'category':9s} {'gender':7s} {'age':12s} {'accent':12s} {'character':14s} use case")
     for line in sorted(rows):
         print(line)
-
-
-def convert_one(ffmpeg, args, src, dst):
-    if dst.exists():
-        return src.name, "skipped (exists)"
-    settings = {"stability": args.stability, "similarity_boost": args.similarity, "style": args.style, "use_speaker_boost": True}
-    for attempt in range(5):
-        with open(src, "rb") as fh:
-            r = requests.post(
-                f"{API}/speech-to-speech/{args.voice}",
-                headers=headers(),
-                params={"output_format": args.output_format},
-                data={"model_id": args.model, "voice_settings": json.dumps(settings), "remove_background_noise": "false"},
-                files={"audio": (src.name, fh, "audio/ogg")},
-                timeout=180,
-            )
-        if r.status_code == 429 or r.status_code >= 500:
-            time.sleep(3 * (attempt + 1))
-            continue
-        if r.status_code != 200:
-            return src.name, f"HTTP {r.status_code}: {r.text[:160]}"
-        break
-    else:
-        return src.name, "gave up after retries"
-    dst.parent.mkdir(parents=True, exist_ok=True)
-    # API returns mp3 (or pcm); normalise to WAV 44.1 kHz mono for the pipeline
-    if args.output_format.startswith("pcm_"):
-        rate = args.output_format.split("_")[1]
-        cmd = [ffmpeg, "-y", "-loglevel", "error", "-f", "s16le", "-ar", rate, "-ac", "1", "-i", "pipe:0", "-ar", "44100", "-ac", "1", str(dst)]
-    else:
-        cmd = [ffmpeg, "-y", "-loglevel", "error", "-i", "pipe:0", "-ar", "44100", "-ac", "1", str(dst)]
-    p = subprocess.run(cmd, input=r.content, capture_output=True)
-    if p.returncode != 0:
-        return src.name, "ffmpeg: " + p.stderr.decode("utf-8", "replace")[-160:]
-    return src.name, "ok"
-
-
-def cmd_convert(args):
-    ffmpeg = find_ffmpeg(args.ffmpeg)
-    src_dir, dst_dir = Path(args.src), Path(args.dst)
-    files = sorted(src_dir.glob("*.ogg"))
-    if args.files:
-        wanted = set(args.files.split(","))
-        files = [f for f in files if f.stem in wanted]
-    if args.limit:
-        files = files[: args.limit]
-    if not files:
-        sys.exit(f"ERROR: no .ogg files in {src_dir}")
-    print(f"voice {args.voice}, model {args.model}, {len(files)} file(s) -> {dst_dir}")
-    ok = skipped = failed = 0
-    with ThreadPoolExecutor(max_workers=args.jobs) as pool:
-        futs = [pool.submit(convert_one, ffmpeg, args, f, dst_dir / (f.stem + ".wav")) for f in files]
-        for i, fut in enumerate(as_completed(futs), 1):
-            name, status = fut.result()
-            if status == "ok":
-                ok += 1
-            elif status.startswith("skipped"):
-                skipped += 1
-            else:
-                failed += 1
-                print(f"FAILED {name}: {status}")
-            if i % 50 == 0 or i == len(files):
-                print(f"  {i}/{len(files)}")
-    print(f"done: {ok} converted, {skipped} skipped, {failed} failed")
-    sys.exit(1 if failed else 0)
 
 
 def tts_one(ffmpeg, voice_id, text, dst, model, stability, similarity, style, output_format="mp3_44100_128"):
@@ -262,21 +196,8 @@ def main():
     pt.add_argument("--ffmpeg")
     pv = sub.add_parser("voices")
     pv.add_argument("--filter", help="substring filter on the printed line, e.g. male, female, deep, german")
-    pc = sub.add_parser("convert")
-    pc.add_argument("--voice", required=True, help="voice_id from 'voices'")
-    pc.add_argument("--src", required=True)
-    pc.add_argument("--dst", required=True)
-    pc.add_argument("--files")
-    pc.add_argument("--limit", type=int)
-    pc.add_argument("--model", default="eleven_multilingual_sts_v2")
-    pc.add_argument("--output-format", default="mp3_44100_128", help="mp3_44100_128 works on every plan; pcm_44100 needs a higher tier")
-    pc.add_argument("--stability", type=float, default=0.5)
-    pc.add_argument("--similarity", type=float, default=0.8)
-    pc.add_argument("--style", type=float, default=0.0)
-    pc.add_argument("--jobs", type=int, default=2, help="parallel requests; keep small to respect rate limits")
-    pc.add_argument("--ffmpeg")
     args = ap.parse_args()
-    {"quota": cmd_quota, "voices": cmd_voices, "convert": cmd_convert, "tts": cmd_tts, "tts-batch": cmd_tts_batch}[args.cmd](args)
+    {"quota": cmd_quota, "voices": cmd_voices, "tts": cmd_tts, "tts-batch": cmd_tts_batch}[args.cmd](args)
 
 
 if __name__ == "__main__":

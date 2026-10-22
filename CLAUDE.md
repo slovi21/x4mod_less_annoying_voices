@@ -4,21 +4,21 @@
 
 ## What this is
 
-A mod for X4: Foundations that replaces Boso Ta's voice lines (voice set 10201) with processed copies through a redirect in `libraries/sound_library.xml`. No game audio in the repository. Verified engine facts: `docs/phase0-findings.md`. Plain-language explanation: `docs/HOW-IT-WORKS.md`. The research that started the project: `docs/X4_Boso_Ta_Voice_Mod_Handoff.md` (German, kept as the source document).
+A mod for X4: Foundations that replaces Boso Ta's voice lines (voice set 10201) through a redirect in `libraries/sound_library.xml`: German lines re-spoken with ElevenLabs text-to-speech (voice Will), English lines processed originals. No game audio in the repository. Verified engine facts: `docs/phase0-findings.md`. Plain-language explanation: `docs/HOW-IT-WORKS.md`. Everything that was tried and removed: `docs/HISTORY.md`.
 
 ## Layout
 
 ```
-config/variants.json       variants: 'alien' (German audio, recommended), 'alien_en' (English audio), 'de'/'en' (engine effects only)
+config/variants.json       variants: will (DE, TTS), alien (DE, processed originals), alien_en (EN), alien_ws / alien_en_ws (Workshop builds)
 tools/build_mod.py         writes dist/<id>/ (content.xml + sound_library.xml diff incl. attribute patches)
 tools/validate_mod.py      checks selectors and attribute operations against the game's real sound_library.xml
 tools/install_mod.py       installs exactly one variant (XML + audio from build/audio/); refuses while X4.exe runs
 tools/process_audio.py     ffmpeg/Rubberband filter chains, two-pass loudness, --gain-db; --list shows variants
-tools/pitch_flatten.py     Praat pre-stage (intonation range compression), runs in build/venv
+tools/voice_convert_elevenlabs.py  ElevenLabs TTS: quota, voices, tts, tts-batch (resumable); key in %USERPROFILE%\.elevenlabs_key
+tools/check_coverage.py    after a game patch: missing or changed Boso Ta lines per variant folder
 tools/x4cat_extract.py     .cat/.dat extractor (text index + concatenated data, no XRCatTool needed)
 dist/                      built extensions without audio (committed)
-diag/                      diagnostic extension that proved the audio redirect
-build/                     extracted game files, processed audio, samples, venv, Workshop staging – ignored
+build/                     extracted game files, TTS output, processed audio, samples, venv, Workshop staging – ignored
 docs/projekt/              MILESTONES.md, CURRENT_STATE.md
 docs/dev-team/             ROUTING-LOG.md, LESSONS.md
 ```
@@ -26,10 +26,11 @@ docs/dev-team/             ROUTING-LOG.md, LESSONS.md
 ## Commands
 
 ```bash
-python -I tools/process_audio.py --variant d12_alien_mid --gain-db 9 --src <originals> --dst build/audio/d12_alien_mid_g9
+build/venv/Scripts/python.exe -I tools/voice_convert_elevenlabs.py tts-batch --voice bIHbv24MWmeRgasZH58o --model eleven_v4_turbo --tfile build/base/t/0001-l049.xml --ids-from <originals> --dst build/tts/will_de
+python -I tools/process_audio.py --variant will_dark --src build/tts/will_de --src-ext wav --gain-db 6 --dst build/audio/will_dark_g6
 python -I tools/build_mod.py            # build all variants
 python -I tools/validate_mod.py         # check against the game (mandatory before install)
-python -I tools/install_mod.py alien    # alien | alien_en | de | en; --remove deletes every bosota_*
+python -I tools/install_mod.py will     # will | alien | alien_en | alien_ws | alien_en_ws; --remove deletes every bosota_*
 ```
 
 `-I` is Python's isolated mode. Game folder via `--game-dir` or `X4_GAME_DIR`, default `C:\Steam\steamapps\common\X4 Foundations`. ffmpeg: full build (`winget install Gyan.FFmpeg`), located under `%LOCALAPPDATA%\Microsoft\WinGet\Packages\Gyan.FFmpeg_*\...\bin\` and not on the tool shell's PATH (`--ffmpeg <path>`).

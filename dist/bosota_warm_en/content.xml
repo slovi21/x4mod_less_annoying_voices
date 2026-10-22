@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<content id="bosota_warm_en" name="Boso Ta - Warmer Voice (EN variant: medium)" description="Deeper, warmer voice for Boso Ta (voice set 10201) via engine effects only. Tuned for the English voice track. No audio files changed." author="Slovi" version="100" date="2026-10-22" enabled="1" save="0">
-  <text language="44" name="Boso Ta - Warmer Voice (EN variant: medium)" description="Deeper, warmer voice for Boso Ta (voice set 10201) via engine effects only. Tuned for the English voice track. No audio files changed."/>
-  <text language="49" name="Boso Ta – wärmere Stimme (EN-Variante: mittel)" description="Tiefere, wärmere Stimme für Boso Ta (Stimm-Set 10201) nur über Engine-Effekte. Abgestimmt auf die englische Sprachspur. Keine Audiodateien geändert."/>
-</content>

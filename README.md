@@ -16,8 +16,9 @@ Boso Ta speaks through voice set `10201`. The only other character wired to that
 | `will` | text-to-speech | **German voice track, the published DE version.** All lines re-spoken from the game texts by the ElevenLabs voice "Will" (Eleven v4 Turbo), then 4 semitones down with shifted formants, warmed, +6 dB. Natural pacing, no accent; line lengths differ slightly, lip sync not preserved. Needs an ElevenLabs account to build (about 92,000 credits). |
 | `alien` | audio redirect | German voice track, processed originals: 12 semitones down, formants shifted, frequency shift, chorus, mid-range focus, +9 dB. Superseded by `will` for publishing; kept as the no-account alternative. |
 | `alien_en` | audio redirect | **English voice track, the published EN version.** Half strength: 6 semitones down, half the frequency shift and chorus, same mid-range focus, +4 dB. The English original is less shrill, so it needs less correction. |
-| `alien_ws` | text-to-speech | The `will` build under the Steam Workshop folder name `ws_3824406333`. |
-| `de`, `en` | engine effects only | Pitch via resampling (which also slows the speech) plus a low-pass filter. No audio files needed. Kept as a lightweight fallback; it was not enough for the author. |
+| `alien_ws`, `alien_en_ws` | Workshop builds | The `will` and `alien_en` builds under their Steam Workshop folder names `ws_3824406333` and `ws_3824446410`. |
+
+An earlier approach with engine effects only (resampling pitch plus low-pass, no audio files) is documented in `docs/HISTORY.md`; it was not good enough and has been removed.
 
 Why text-to-speech for German: converting the original recordings into another voice (speech-to-speech) kept the original actor's regional colouring in every one of 21 voices tried. Generating from the texts avoids it. The texts live in page 10201 of the game's text file under the same ids as the audio files; `tools/voice_convert_elevenlabs.py tts-batch` does the whole run and can be resumed. Five ids have no text entry and keep the `alien` audio.
 
@@ -71,7 +72,7 @@ X4 lets you pick the voice language independently of the interface language. Add
 
 ## Tuning
 
-`python -I tools/process_audio.py --list` prints every filter chain: plain pitch drops, computer voices, ring modulation, a doubled voice, the alien chain, whisper, underwater, the mid-range focus, octave steps and scaled strengths. Render a few lines with `--files <id,id> --wav` and listen to them on the PC to judge character. Judge **loudness and intelligibility only inside the game**: a dark voice sounds just as loud as the original on headphones and still disappears under the station ambience in the game. `tools/pitch_flatten.py` (Praat, in its own environment under `build/venv`) can compress intonation peaks before processing if the high notes are the problem.
+`python -I tools/process_audio.py --list` prints the three production chains; `alien_mid_scaled(k)` in that file gives the alien chain at any strength, and new chains are one dictionary entry. Render a few lines with `--files <id,id> --wav` and listen to them on the PC to judge character. Judge **loudness and intelligibility only inside the game**: a dark voice sounds just as loud as the original on headphones and still disappears under the station ambience in the game. The chains that were tried and rejected along the way are listed in `docs/HISTORY.md`.
 
 ## Distributing the mod
 
@@ -94,14 +95,14 @@ Package the **installed** folder, for example `extensions\bosota_voice_alien\` w
 config/variants.json       variant definitions, audio recipes, attribute patches
 tools/x4cat_extract.py     .cat/.dat extractor (text index + concatenated data)
 tools/process_audio.py     ffmpeg/Rubberband filter chains, two-pass loudness, gain
-tools/pitch_flatten.py     Praat pre-stage (intonation range compression)
+tools/voice_convert_elevenlabs.py  text-to-speech via ElevenLabs (quota, voices, tts, resumable tts-batch)
+tools/check_coverage.py    after a game patch: lists Boso Ta lines missing from a variant folder
 tools/build_mod.py         writes dist/<id>/ from the configuration
 tools/validate_mod.py      checks the diff against the game's real sound_library.xml
 tools/install_mod.py       installs exactly one variant, audio included
 dist/                      built extensions without audio (committed)
-diag/                      diagnostic extension that proved the redirect mechanism
 docs/                      project documentation (see below)
-build/                     extracted game files, processed audio, samples, venv (ignored)
+build/                     extracted game files, processed audio, samples, venv, Workshop staging (ignored)
 ```
 
-Documentation: `docs/HOW-IT-WORKS.md` (plain language), `docs/phase0-findings.md` (verified engine facts), `docs/projekt/MILESTONES.md` and `docs/projekt/CURRENT_STATE.md` (project state), `docs/dev-team/LESSONS.md` (what we learned the hard way). The original research handoff that started the project is kept in German as `docs/X4_Boso_Ta_Voice_Mod_Handoff.md`.
+Documentation: `docs/HOW-IT-WORKS.md` (plain language), `docs/phase0-findings.md` (verified engine facts), `docs/RELEASE.md` (Workshop and ModDB procedure), `docs/MAINTENANCE.md` (what a game patch can break and how to check), `docs/HISTORY.md` (development and patch history, including everything that was tried and removed), `docs/projekt/MILESTONES.md` and `docs/projekt/CURRENT_STATE.md` (project state), `docs/dev-team/LESSONS.md` (what we learned the hard way).

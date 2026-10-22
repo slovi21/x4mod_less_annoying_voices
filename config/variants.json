@@ -108,6 +108,79 @@
           "_doc": "conversations in 2D: facing Boso 90 % of Karee's loudness, back turned 60 % and unintelligible"
         }
       ]
+    },
+    "alien_ws": {
+      "id": "ws_3824406333",
+      "kind": "audio",
+      "audio_variant": "will_dark_g6",
+      "name_en": "Boso Ta - new VOICE Will (DE)",
+      "name_de": "Boso Ta – neue Stimme Will (DE)",
+      "desc_en": "German voice track only. Boso Ta's 2,324 German lines are re-spoken from the game texts with the ElevenLabs voice 'Will' (Eleven v4 Turbo), then lowered by 4 semitones with shifted formants, warmed (+4 dB below 220 Hz, -4 dB above 4 kHz), loudness-normalised and raised by 6 dB with a limiter. Line lengths differ slightly from the originals; lip sync is not preserved. Conversations play in 2D. Audio is generated locally and is not part of the repository.",
+      "desc_de": "Nur deutsche Sprachausgabe. Boso Tas 2 324 deutsche Zeilen werden aus den Spieltexten neu gesprochen, mit der ElevenLabs-Stimme „Will“ (Eleven v4 Turbo), dann 4 Halbtöne tiefer mit mitverschobenen Formanten, wärmer (+4 dB unter 220 Hz, −4 dB über 4 kHz), lautheitsnormalisiert und um 6 dB mit Begrenzer angehoben. Die Zeilenlängen weichen leicht von den Originalen ab, die Mundbewegung ist nicht synchron. Gespräche laufen zweidimensional. Die Audiodateien werden lokal erzeugt und sind nicht Teil des Repositories.",
+      "audio_recipe": "1) build\u000benv\\Scripts\\python.exe -I tools/voice_convert_elevenlabs.py tts-batch --voice bIHbv24MWmeRgasZH58o --model eleven_v4_turbo --tfile build/base/t/0001-l049.xml --ids-from <voice-l049/10201/normal> --dst build/tts/will_de   2) python -I tools/process_audio.py --variant will_dark --src build/tts/will_de --src-ext wav --gain-db 6 --dst build/audio/will_dark_g6   3) ids without text (10417 10603 30226001 30226002 30226003): copy from build/audio/d12_alien_mid_g9",
+      "sound_attr_ops": [
+        {
+          "op": "add",
+          "attr": "noocclusion",
+          "value": "true",
+          "ids": [
+            "10201_normal",
+            "10201_normal_npc",
+            "10201_comm",
+            "10201_comm_npc",
+            "10201_comm_broadcast"
+          ],
+          "_doc": "no muffling by geometry (Boso sits behind glass); 10201_comm_signalleak already has the attribute"
+        },
+        {
+          "op": "replace",
+          "attr": "is3d",
+          "value": "0",
+          "ids": [
+            "10201_normal",
+            "10201_normal_npc"
+          ],
+          "_doc": "conversations in 2D: facing Boso 90 % of Karee's loudness, back turned 60 % and unintelligible"
+        }
+      ],
+      "version": "102",
+      "_doc": "Steam Workshop build of the German Will variant (item 3824406333, created 2026-10-22 with the Alien audio, hidden). Folder name, id and redirect path must all be the Workshop id."
+    },
+    "will": {
+      "id": "bosota_voice_will_de",
+      "kind": "audio",
+      "audio_variant": "will_dark_g6",
+      "name_en": "Boso Ta - new VOICE Will (DE)",
+      "name_de": "Boso Ta – neue Stimme Will (DE)",
+      "desc_en": "German voice track only. Boso Ta's 2,324 German lines are re-spoken from the game texts with the ElevenLabs voice 'Will' (Eleven v4 Turbo), then lowered by 4 semitones with shifted formants, warmed (+4 dB below 220 Hz, -4 dB above 4 kHz), loudness-normalised and raised by 6 dB with a limiter. Line lengths differ slightly from the originals; lip sync is not preserved. Conversations play in 2D. Audio is generated locally and is not part of the repository.",
+      "desc_de": "Nur deutsche Sprachausgabe. Boso Tas 2 324 deutsche Zeilen werden aus den Spieltexten neu gesprochen, mit der ElevenLabs-Stimme „Will“ (Eleven v4 Turbo), dann 4 Halbtöne tiefer mit mitverschobenen Formanten, wärmer (+4 dB unter 220 Hz, −4 dB über 4 kHz), lautheitsnormalisiert und um 6 dB mit Begrenzer angehoben. Die Zeilenlängen weichen leicht von den Originalen ab, die Mundbewegung ist nicht synchron. Gespräche laufen zweidimensional. Die Audiodateien werden lokal erzeugt und sind nicht Teil des Repositories.",
+      "audio_recipe": "1) build\u000benv\\Scripts\\python.exe -I tools/voice_convert_elevenlabs.py tts-batch --voice bIHbv24MWmeRgasZH58o --model eleven_v4_turbo --tfile build/base/t/0001-l049.xml --ids-from <voice-l049/10201/normal> --dst build/tts/will_de   2) python -I tools/process_audio.py --variant will_dark --src build/tts/will_de --src-ext wav --gain-db 6 --dst build/audio/will_dark_g6   3) ids without text (10417 10603 30226001 30226002 30226003): copy from build/audio/d12_alien_mid_g9",
+      "sound_attr_ops": [
+        {
+          "op": "add",
+          "attr": "noocclusion",
+          "value": "true",
+          "ids": [
+            "10201_normal",
+            "10201_normal_npc",
+            "10201_comm",
+            "10201_comm_npc",
+            "10201_comm_broadcast"
+          ],
+          "_doc": "no muffling by geometry (Boso sits behind glass); 10201_comm_signalleak already has the attribute"
+        },
+        {
+          "op": "replace",
+          "attr": "is3d",
+          "value": "0",
+          "ids": [
+            "10201_normal",
+            "10201_normal_npc"
+          ],
+          "_doc": "conversations in 2D: facing Boso 90 % of Karee's loudness, back turned 60 % and unintelligible"
+        }
+      ],
+      "version": "100"
     }
   }
 }

@@ -24,6 +24,13 @@ Durable, non-obvious findings with evidence. One-offs and generalities do not be
 - **Rubberband adds about 60 ms of latency** to every file. Harmless for dialogue and lip sync.
 - **Measured levels of the final variants:** German −14.7 LUFS at −0.3 dBTP (+9 dB), English −18.2 LUFS at −1.5 dBTP (+4 dB).
 
+## ElevenLabs
+
+- **Eleven v4 Turbo cost far less than the published 0.5 credits per character.** The German batch (2,319 lines, 183,227 characters after stripping stage directions) plus about 60 test generations consumed 40,286 credits in total, roughly 0.2 credits per character. Budget with the published rate, expect to spend less. *(Creator plan, 2026-10-22: 125,946 → 85,660 credits.)*
+- **Speech-to-speech keeps the source actor's regional colouring.** All 21 premade voices converted from the German Boso Ta recordings carried the actor's Saxon intonation; text-to-speech from the game texts does not. Lip sync is lost with TTS, which Slovi accepted.
+- **Library voices (professional voice clones) are blocked on the free plan via the API** (HTTP 402 "paid_plan_required"); premade voices work. The `/user/subscription` endpoint needs a key with user-read permission, otherwise 401 while TTS still works.
+- **Game texts for TTS:** page 10201 of `t/0001-l0xx.xml` holds every line under the same id as the audio file; alternate takes (`…fp`) share the base id's text; a handful of ids have no text and keep processed original audio.
+
 ## X4 modding
 
 - **Boso Ta has no voice page of his own.** He speaks through set `10201`, assigned per actor in the mission scripts, and the page is stored in the save. Speaker pages are not found by character name in the text files; look up the `$speak` ids from the mission scripts, which reappear as file names under `voice-l0xx/<page>/<context>/`.

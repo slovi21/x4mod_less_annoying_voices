@@ -13,9 +13,13 @@ Boso Ta speaks through voice set `10201`. The only other character wired to that
 
 | Key | Kind | What you get |
 |---|---|---|
-| `alien` | audio redirect | **German voice track.** Full strength: 12 semitones down, formants shifted, frequency shift, chorus, mid-range focus, +9 dB. |
-| `alien_en` | audio redirect | **English voice track.** Half strength: 6 semitones down, half the frequency shift and chorus, same mid-range focus, +4 dB. The English original is less shrill, so it needs less correction. |
+| `will` | text-to-speech | **German voice track, the published DE version.** All lines re-spoken from the game texts by the ElevenLabs voice "Will" (Eleven v4 Turbo), then 4 semitones down with shifted formants, warmed, +6 dB. Natural pacing, no accent; line lengths differ slightly, lip sync not preserved. Needs an ElevenLabs account to build (about 92,000 credits). |
+| `alien` | audio redirect | German voice track, processed originals: 12 semitones down, formants shifted, frequency shift, chorus, mid-range focus, +9 dB. Superseded by `will` for publishing; kept as the no-account alternative. |
+| `alien_en` | audio redirect | **English voice track, the published EN version.** Half strength: 6 semitones down, half the frequency shift and chorus, same mid-range focus, +4 dB. The English original is less shrill, so it needs less correction. |
+| `alien_ws` | text-to-speech | The `will` build under the Steam Workshop folder name `ws_3824406333`. |
 | `de`, `en` | engine effects only | Pitch via resampling (which also slows the speech) plus a low-pass filter. No audio files needed. Kept as a lightweight fallback; it was not enough for the author. |
+
+Why text-to-speech for German: converting the original recordings into another voice (speech-to-speech) kept the original actor's regional colouring in every one of 21 voices tried. Generating from the texts avoids it. The texts live in page 10201 of the game's text file under the same ids as the audio files; `tools/voice_convert_elevenlabs.py tts-batch` does the whole run and can be resumed. Five ids have no text entry and keep the `alien` audio.
 
 Only one variant can be active at a time. They all rewrite the same six sound entries. The audio variants are tied to one voice language each, because the redirect in `sound_library.xml` is language independent: an English player with the German variant would hear processed German lines.
 

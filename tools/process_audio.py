@@ -124,6 +124,13 @@ VARIANTS.update({
     "alien_mid_25": ("Standard auf 25 %: -3 Halbtöne, Verschiebung -18 Hz", alien_mid_scaled(0.25)),
 })
 
+# Nachbearbeitung für Text-zu-Sprache-Ausgaben (ElevenLabs-Stimme "Will"): dunkler, wärmer, tiefer.
+# Slovis Wahl 2026-10-22: Probe 3_will_minus4_warm.
+VARIANTS.update({
+    "will_dark": ("TTS-Nachbearbeitung: -4 Halbtöne (Formanten mitverschoben), Bass +4 dB ab 220 Hz, Höhen -4 dB ab 4 kHz",
+                  ",".join([rb(0.7937), "lowshelf=f=220:g=4", "highshelf=f=4000:g=-4"])),
+})
+
 VARIANTS.update({
     "tank_oct1.5": ("Alien im Tank, 1,5 Oktaven unter Original (-18 Halbtöne)", alien_tank_pitch(0.3536)),
     "tank_oct1.5_presence": ("Alien im Tank -18 Halbtöne, Tiefpass auf 3,2 kHz geöffnet, +4 dB um 1,8 kHz: setzt sich im Spielmix durch",

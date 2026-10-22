@@ -103,7 +103,7 @@ def build_content(v, cfg):
     return (
         '<?xml version="1.0" encoding="utf-8"?>\n'
         f"<content id={q(v['id'])} name={q(v['name_en'])} description={q(v['desc_en'])} "
-        f"author={q(cfg['author'])} version={q(cfg['version'])} date={q(today)} enabled=\"1\" save=\"0\">\n"
+        f"author={q(cfg['author'])} version={q(v.get('version', cfg['version']))} date={q(today)} enabled=\"1\" save=\"0\">\n"
         f"  <text language=\"44\" name={q(v['name_en'])} description={q(v['desc_en'])}/>\n"
         f"  <text language=\"49\" name={q(v['name_de'])} description={q(v['desc_de'])}/>\n"
         "</content>\n"

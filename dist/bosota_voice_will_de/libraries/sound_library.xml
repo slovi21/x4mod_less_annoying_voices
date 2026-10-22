@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<diff>
+  <!-- generiert von tools/build_mod.py – Audio-Variante bosota_voice_will_de (Bearbeitung: will_dark_g6) -->
+  <!-- Audiodateien: tools/install_mod.py kopiert build/audio/<variante>/*.ogg nach voice/10201/normal/ -->
+  <replace sel="/soundlibrary/sound[@id='10201_normal']/sample">
+    <sample start="extensions\bosota_voice_will_de\voice\10201\normal"/>
+  </replace>
+  <replace sel="/soundlibrary/sound[@id='10201_normal_npc']/sample">
+    <sample start="extensions\bosota_voice_will_de\voice\10201\normal"/>
+  </replace>
+  <replace sel="/soundlibrary/sound[@id='10201_comm']/sample">
+    <sample start="extensions\bosota_voice_will_de\voice\10201\normal"/>
+  </replace>
+  <replace sel="/soundlibrary/sound[@id='10201_comm_signalleak']/sample">
+    <sample start="extensions\bosota_voice_will_de\voice\10201\normal"/>
+  </replace>
+  <replace sel="/soundlibrary/sound[@id='10201_comm_npc']/sample">
+    <sample start="extensions\bosota_voice_will_de\voice\10201\normal"/>
+  </replace>
+  <replace sel="/soundlibrary/sound[@id='10201_comm_broadcast']/sample">
+    <sample start="extensions\bosota_voice_will_de\voice\10201\normal"/>
+  </replace>
+  <add sel="/soundlibrary/sound[@id='10201_normal']" type="@noocclusion">true</add>
+  <add sel="/soundlibrary/sound[@id='10201_normal_npc']" type="@noocclusion">true</add>
+  <add sel="/soundlibrary/sound[@id='10201_comm']" type="@noocclusion">true</add>
+  <add sel="/soundlibrary/sound[@id='10201_comm_npc']" type="@noocclusion">true</add>
+  <add sel="/soundlibrary/sound[@id='10201_comm_broadcast']" type="@noocclusion">true</add>
+  <replace sel="/soundlibrary/sound[@id='10201_normal']/@is3d">0</replace>
+  <replace sel="/soundlibrary/sound[@id='10201_normal_npc']/@is3d">0</replace>
+</diff>

@@ -1,0 +1,59 @@
+{
+  "_doc": [
+    "Parameter der Mod-Varianten. Nach Änderung: python -I tools/build_mod.py  und  python -I tools/validate_mod.py",
+    "pitch:   Abspielfaktor (Resampling!). 1.0 = original, 0.891 = -2 Halbtöne, 0.841 = -3 Halbtöne. Das Tempo sinkt im gleichen Maß.",
+    "lowpass: Tiefpass-Grenzfrequenz auf der Engine-Skala 0..1 (1 = praktisch aus, kleiner = dumpfer). Spielwerte: 0.5 leicht, 0.15 stark gedämpft.",
+    "reverb:  null oder {room, roomsize, drymix, density}; room aus sound_library.xsd (z. B. 'carpeted hallway', 'padded cell').",
+    "Bei den Sound-IDs: true = Eintrag hat in der Basis bereits <effects> (Kinder werden eingefügt); false = <effects> wird neu angelegt."
+  ],
+  "author": "Slovi",
+  "version": "100",
+  "boso_ta_ids": {
+    "10201_normal": false,
+    "10201_normal_npc": false,
+    "10201_comm": false,
+    "10201_comm_signalleak": false,
+    "10201_comm_npc": false,
+    "10201_comm_broadcast": false
+  },
+  "betty_test_ids": {
+    "10002_normal": true,
+    "10002_comm": true,
+    "10002_comm_broadcast": true
+  },
+  "variants": {
+    "de": {
+      "id": "bosota_warm_de",
+      "name_en": "Boso Ta - Warmer Voice (DE variant: strong)",
+      "name_de": "Boso Ta – wärmere Stimme (DE-Variante: stark)",
+      "desc_en": "Deeper, warmer voice for Boso Ta (voice set 10201) via engine effects only. Tuned for the German voice track. No audio files changed.",
+      "desc_de": "Tiefere, wärmere Stimme für Boso Ta (Stimm-Set 10201) nur über Engine-Effekte. Abgestimmt auf die deutsche Sprachspur. Keine Audiodateien geändert.",
+      "pitch": 0.841,
+      "lowpass": 0.25,
+      "reverb": null,
+      "include_betty": false
+    },
+    "en": {
+      "id": "bosota_warm_en",
+      "name_en": "Boso Ta - Warmer Voice (EN variant: medium)",
+      "name_de": "Boso Ta – wärmere Stimme (EN-Variante: mittel)",
+      "desc_en": "Deeper, warmer voice for Boso Ta (voice set 10201) via engine effects only. Tuned for the English voice track. No audio files changed.",
+      "desc_de": "Tiefere, wärmere Stimme für Boso Ta (Stimm-Set 10201) nur über Engine-Effekte. Abgestimmt auf die englische Sprachspur. Keine Audiodateien geändert.",
+      "pitch": 0.891,
+      "lowpass": 0.35,
+      "reverb": null,
+      "include_betty": false
+    },
+    "test": {
+      "id": "bosota_warm_test",
+      "name_en": "Boso Ta - Warmer Voice (TEST: also Betty)",
+      "name_de": "Boso Ta – wärmere Stimme (TEST: auch Betty)",
+      "desc_en": "TEST BUILD: DE parameters applied to Boso Ta AND the ship computer Betty, so the effect is audible right at game start. Replace with the de/en variant afterwards.",
+      "desc_de": "TESTBUILD: DE-Parameter auf Boso Ta UND den Bordcomputer Betty, damit der Effekt sofort beim Spielstart hörbar ist. Danach durch die de/en-Variante ersetzen.",
+      "pitch": 0.841,
+      "lowpass": 0.25,
+      "reverb": null,
+      "include_betty": true
+    }
+  }
+}

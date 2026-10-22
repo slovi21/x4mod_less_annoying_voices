@@ -1,0 +1,4 @@
+# Build-Zwischenstände (extrahierte Spieldateien, nicht verteilen)
+build/
+__pycache__/
+*.pyc

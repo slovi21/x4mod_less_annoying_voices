@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<diff>
+  <!-- generiert von tools/build_mod.py aus config/variants.json – Variante bosota_warm_en -->
+  <!-- pitch=0.891 lowpass=0.35 reverb=nein -->
+  <add sel="/soundlibrary/sound[@id='10201_normal']">
+    <effects>
+      <pitch start="0.891" end="0.891" steps="1"/>
+      <filter mode="lowpass" frequency="0.35"/>
+    </effects>
+  </add>
+  <add sel="/soundlibrary/sound[@id='10201_normal_npc']">
+    <effects>
+      <pitch start="0.891" end="0.891" steps="1"/>
+      <filter mode="lowpass" frequency="0.35"/>
+    </effects>
+  </add>
+  <add sel="/soundlibrary/sound[@id='10201_comm']">
+    <effects>
+      <pitch start="0.891" end="0.891" steps="1"/>
+      <filter mode="lowpass" frequency="0.35"/>
+    </effects>
+  </add>
+  <add sel="/soundlibrary/sound[@id='10201_comm_signalleak']">
+    <effects>
+      <pitch start="0.891" end="0.891" steps="1"/>
+      <filter mode="lowpass" frequency="0.35"/>
+    </effects>
+  </add>
+  <add sel="/soundlibrary/sound[@id='10201_comm_npc']">
+    <effects>
+      <pitch start="0.891" end="0.891" steps="1"/>
+      <filter mode="lowpass" frequency="0.35"/>
+    </effects>
+  </add>
+  <add sel="/soundlibrary/sound[@id='10201_comm_broadcast']">
+    <effects>
+      <pitch start="0.891" end="0.891" steps="1"/>
+      <filter mode="lowpass" frequency="0.35"/>
+    </effects>
+  </add>
+</diff>

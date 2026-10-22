@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<diff>
+  <!--
+    Diagnose-Build v2 (2026-10-22).
+    Ergebnis v1: Boso Ta vor Ort fast stumm (volume 0.03) -> der Diff dieser Extension wird angewendet. Bewiesen.
+                 Betty mit pitch 0.6 und Boso im Funk mit Unterwasser-Hall: nichts bemerkt (unklar, ob gehört).
+    v2 hängt die beiden entscheidenden Effekte direkt an Boso Ta, jeweils extrem, damit nichts vom Zufall abhängt:
+      A) 10201_normal (Gespräch vor Ort): pitch als Bereich 0.5-0.6 in 4 Stufen
+         -> wirkt <pitch> auf Sprache? (Bereich statt Festwert, falls steps="1" mit start=end ein No-op ist)
+      B) 10201_comm (Funkfenster, Boso Ta anrufen): Tiefpass 0.03
+         -> wirkt <filter> auf Sprache? Bei 0.03 müsste die Stimme dumpf wie durch eine Wand klingen.
+    Keine Lautstärke-Änderung mehr: Boso Ta ist wieder normal laut.
+  -->
+  <add sel="/soundlibrary/sound[@id='10201_normal']">
+    <effects>
+      <pitch start="0.5" end="0.6" steps="4"/>
+    </effects>
+  </add>
+  <add sel="/soundlibrary/sound[@id='10201_comm']">
+    <effects>
+      <filter mode="lowpass" frequency="0.03"/>
+    </effects>
+  </add>
+</diff>

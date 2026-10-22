@@ -63,6 +63,6 @@ Speech-to-speech with all 21 ElevenLabs premade voices kept the original actor's
 
 | Date | Game version | Change |
 |---|---|---|
-| 2026-10-22 | 9.00 | initial release, both items hidden |
+| 2026-10-22 | 9.00 | initial release, both items hidden; DE item verified via Workshop subscription |
 
 After a game patch, follow `docs/MAINTENANCE.md` and add a line here.

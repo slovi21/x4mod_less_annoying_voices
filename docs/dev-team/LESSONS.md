@@ -1,29 +1,39 @@
-# Lessons Learned
+# Lessons learned
 
-Dauerhafte, nicht offensichtliche Erkenntnisse mit Beleg. Einmaliges und Allgemeinplätze gehören nicht hierher.
+Durable, non-obvious findings with evidence. One-offs and generalities do not belong here.
 
-## Werkzeuge / Umgebung
+## Working with Slovi
 
-- **OneDrive setzt das ReadOnly-Attribut auf Ordner.** Repos unter `OneDrive\Documents\#repos` haben schreibgeschützte Verzeichnisse (`attrib` zeigt `R`). Folgen: `shutil.rmtree` scheitert mit `WinError 5` beim `rmdir`, obwohl die Dateien darin gelöscht werden; `shutil.copytree` überträgt das Attribut ins Ziel, sodass auch dort nicht mehr gelöscht werden kann. Abhilfe: Ordner in place überschreiben statt löschen (`build_mod.py`), beim Löschen `onexc`-Handler mit `os.chmod(path, stat.S_IWRITE)` (`install_mod.py`), nach dem Kopieren Attribut im Ziel entfernen. Bash `rm -rf` und PowerShell `Remove-Item -Force` sind davon nicht betroffen. *(Beleg: Sitzung 2026-10-22, `attrib`-Ausgabe und Traceback in `tools/install_mod.py`.)*
-- **Große Bash-Heredocs scheitern im Bash-Tool.** Mehrere lange `cat <<'EOF'`-Blöcke in einem Aufruf brachen mit „unexpected EOF while looking for matching `'`" ab. Dateien dieser Größe mit dem Write-Tool anlegen. *(Beleg: Sitzung 2026-10-22.)*
+- **Decide by ear, in rounds.** Slovi judges sound, not numbers, and has, in his own words, poor hearing. What worked: WAV samples sent in rounds of four to ten, one question per round, every sample normalised to −22 LUFS, the current favourite always included as a reference. Nine rounds took the project from engine effects to "Alien with mid-range focus" in one session.
+- **Judge level and intelligibility only in the game.** A sample that sounds as loud as the original on the PC can still vanish under station ambience and positional audio. Three full renders were spent on level alone.
+- **Make diagnostics coarse.** −3 semitones went unnoticed; a volume of 0.03 and a pitch of 0.3 were unmistakable. Use changes that alter duration or loudness, not timbre.
+- **His console is Windows PowerShell 5.1.** No `grep`, no `&&`; use `Select-String` and `;` or `if ($?) { … }`. Every command he is shown gets each option explained. He talks to the assistant in German; project documentation is written in English.
+
+## Tooling and environment
+
+- **OneDrive marks folders read-only.** Directories under `OneDrive\Documents\#repos` carry the `R` attribute. `shutil.rmtree` fails with WinError 5 on the `rmdir` even though the files are gone, and `shutil.copytree` copies the attribute to the target. Overwrite in place instead of deleting; when deleting, use an `onexc` handler that calls `os.chmod(path, stat.S_IWRITE)`; clear the attribute on the target after copying. Bash `rm -rf` and PowerShell `Remove-Item -Force` are unaffected.
+- **Never build backslash paths inside Python strings fed through a heredoc.** `\b`, `\v` and `\1` were interpreted as escapes and wrecked an XML diff (`extensionsosota…`). Write such files with the Write tool or raw strings.
+- **Large Bash heredocs failed in the tool shell** with "unexpected EOF while looking for matching quote". Create big files with the Write tool.
+- **ffmpeg from winget is not on the tool shell's PATH.** It lives under `%LOCALAPPDATA%\Microsoft\WinGet\Packages\Gyan.FFmpeg_*\ffmpeg-9.0.2-full_build\bin\`; `process_audio.py` finds it there, or pass `--ffmpeg`.
+- **`acompressor` rejects `makeup=0`**; the valid range is 1–64 (a multiplier). Leave it out.
+- **`tasklist` prints in the OEM code page.** Decode its output as bytes and search for ASCII, or Python's default cp1252 decoder throws.
 
 ## Audio
 
-- **LUFS-Normalisierung reicht bei stark abgesenkten, gedämpften Stimmen nicht.** Boso Tas Zeilen, 1,5 Oktaven tiefer mit Tiefpass 2,2 kHz, hatten dieselbe integrierte Lautheit wie das Original (−22 LUFS) und sogar 3 dB mehr RMS, wirkten im Spiel aber „viel zu leise": oberhalb 1 kHz fehlten 11 dB (−30 → −41 dB), und dieser Bereich bestimmt die empfundene Lautstärke und Nähe von Sprache. Abhilfe: nach der Normalisierung +6 dB mit Spitzenbegrenzer (`--gain-db` in `tools/process_audio.py`), im Zweifel Tiefpass anheben. Pegelurteile nur im Spiel, nie an WAV-Proben am PC. *(Beleg: Messung 2026-10-22, `volumedetect` mit/ohne `highpass=f=1000`.)*
-- **Hörproben in Runden, nicht in Parametern.** Slovi entscheidet am Ohr, nicht an Zahlen: 7 Runden zu je 4–10 Varianten (WAV per SendUserFile) führten in einer Sitzung von Engine-Effekten zu „Alien im Tank −18 Halbtöne". Pro Runde eine Frage, alle Proben gleich laut, Referenz immer dabei. *(2026-10-22.)*
+- **LUFS normalisation is not enough for a heavily lowered, low-passed voice.** Boso Ta at −18 semitones with a 2.2 kHz low-pass measured the same integrated loudness as the original (−22 LUFS) and 3 dB more RMS, yet was "far too quiet" in the game: above 1 kHz it carried 11 dB less energy, and that band is what makes speech sound loud and close. Fix: add gain after normalisation with a limiter (`--gain-db`), restore presence with a mid-range focus, and do not go deeper than one octave.
+- **Rubberband adds about 60 ms of latency** to every file. Harmless for dialogue and lip sync.
+- **Measured levels of the final variants:** German −14.7 LUFS at −0.3 dBTP (+9 dB), English −18.2 LUFS at −1.5 dBTP (+4 dB).
 
-## X4-Modding
+## X4 modding
 
-- **3D-Verarbeitung und Occlusion können eine dunkle Stimme unverständlich machen.** Boso Ta (im Glastank) mit bearbeiteter, bassreicher Stimme: zugewandt 90 % der Lautstärke von Karee, mit dem Rücken 60 % und unverständlich; die Datei selbst war bitgenau die gut befundene Probe. Abhilfe im Diff: `noocclusion="true"` (keine Geometrie-Dämpfung) und `is3d="0"` auf `10201_normal`/`10201_normal_npc` (keine Richtungs-/Entfernungsverarbeitung) plus Mitten-Filter im Audio. Helle Originalstimmen überstehen beides unauffällig, bearbeitete dunkle nicht. *(Beleg: Slovis Hörtests 2026-10-22.)*
-- **Attribut-Patches:** `<add sel="…/sound[@id='x']" type="@noocclusion">true</add>` legt ein Attribut an, `<replace sel="…/sound[@id='x']/@is3d">0</replace>` ersetzt ein vorhandenes; `add` auf ein vorhandenes Attribut ist ein Fehler (`10201_comm_signalleak` hat `noocclusion` bereits). `tools/validate_mod.py` prüft beides. *(2026-10-22.)*
-
-- **`<effects><pitch start end steps/>` wirkt auf Sprach-Sounds** (X4 9.00). Mit `start="0.3" end="0.35" steps="4"` sprach der Flugschul-Tutor „extrem langsam und tief". Pitch ist Resampling: Tempo sinkt im gleichen Maß. *(Beleg: Diagnose v5, 2026-10-22.)*
-- **`<replace sel=".../volume">` wirkt sofort und ist der sicherste Nachweis, dass ein Diff greift** (Boso Ta mit `start="0.03"` fast stumm). *(Beleg: Diagnose v1.)*
-- **Hörtests an der Dauer festmachen, nicht an der Klangfarbe.** Slovi hat nach eigener Aussage ein schlechtes Gehör: −3 Halbtöne (0.841) blieben unbemerkt, erst Extremwerte waren eindeutig. Für Nachweise Werte wählen, die die Zeilenlänge sichtbar ändern (≤ 0.5) oder die Lautstärke. *(Beleg: Diagnosen v1–v5.)*
-- **Schnelles Testbett: Flugschul-Tutorial statt Spielstand.** Lädt in Sekunden; der Argon-Tutor (Page 10190) spricht sofort. Für sprecherunabhängige Fragen (Effekt-Mechanik, Umleitung) dort testen, Boso Ta nur für die Feinabstimmung. Das einzige Szenario mit Boso Ta als Erzähler ist `x4ep1_gamestart_tutorial2` (`debug="true"`, versteckt). *(Beleg: `libraries/gamestarts.xml`, 2026-10-22.)*
-- **Audio-Umleitung (Route B) funktioniert, Ordnername `voice`, kein Sprachsuffix.** `<replace sel=".../sample"><sample start="extensions\<mod>\voice\<page>\<kontext>"/></replace>` lädt `extensions\<mod>\voice\<page>\<kontext>\<zeile>.ogg` **wörtlich**; die Engine hängt bei umgeleiteten Pfaden kein `-l049` an. Nachweis gehörfest: Flugschul-Tutor sprach mit Bettys Stimme, die unter `voice\10190\…` lag, nicht mit Boso Tas unter `voice-l049\10190\…`. Dateinamen = Zeilen-IDs des Originals. *(Beleg: Diagnose v6, 2026-10-22.)*
-- **Backslash-Pfade nie in Python-Strings per Heredoc erzeugen.** `\b`, `\v`, `\1` wurden als Escape-Sequenzen interpretiert und zerstörten den XML-Diff (`extensionsosota…`). Solche Dateien mit dem Write-Tool oder `r"…"`-Rohstrings schreiben. *(2026-10-22.)*
-- **Startoptionen:** `-skipintro` überspringt die Intro-Videos, `-debug all` bremst spürbar; Fehler wie „No matching node" landen auch mit `-logfile` allein im Protokoll. Strings in X4.exe verifiziert. *(2026-10-22.)*
-
-- **Boso Ta hat keine eigene Sprach-Page.** Er spricht über das geteilte Set `10201` („Boron NPC 1 / Boron rep / Misc Plot Characters"). Sprecher-Pages sind nicht über den Figurennamen in `t/0001-l044.xml` auffindbar, sondern über die `$speak`-IDs der MD-Skripte, die als Dateinamen `voice-l044/<page>/<kontext>/<speak-id>.ogg` wiederauftauchen. *(Beleg: `docs/phase0-befund.md` §1.)*
-- **Die Extension-Tabelle im Nutzerordner ist rechnerspezifisch** (`content-<Rechnername>.xml`, hier `content-MSI-PRODP20Z.xml`), nicht `content.xml`. Beim Debuggen „Mod ohne Wirkung" dort nachsehen. *(Beleg: X4 9.00, Nutzerordner 2026-10-22.)*
+- **Boso Ta has no voice page of his own.** He speaks through set `10201`, assigned per actor in the mission scripts, and the page is stored in the save. Speaker pages are not found by character name in the text files; look up the `$speak` ids from the mission scripts, which reappear as file names under `voice-l0xx/<page>/<context>/`.
+- **The extension enable table in the user folder is machine specific:** `content-<computer name>.xml`, here `content-MSI-PRODP20Z.xml`.
+- **`<effects><pitch start end steps/>` works on speech** and is a resampling factor: tempo changes with it.
+- **`<replace sel=".../volume">` is the surest proof that a diff is applied.**
+- **The audio redirect works and the path is taken literally.** `<sample start="extensions\<mod>\voice\<page>\<context>"/>` loads `extensions\<mod>\voice\<page>\<context>\<line>.ogg`; no language suffix is inserted. Consequence: one mod can serve only one voice track.
+- **Positional audio and occlusion can make a dark voice unintelligible.** Bit-identical files sounded fine facing the speaker and unintelligible with the back turned. `noocclusion="true"` and `is3d="0"` on the conversation entries fixed it; bright original voices survive both without anyone noticing.
+- **Attribute patches:** `<add sel="…" type="@name">value</add>` creates an attribute, `<replace sel="…/@name">value</replace>` changes an existing one; adding an existing attribute is an error (`10201_comm_signalleak` already has `noocclusion`).
+- **Never swap a mod while X4 is running.** The game reads the diff at start-up; delete the audio folder afterwards and the voice goes silent without a log entry. `install_mod.py` now refuses while `X4.exe` is running.
+- **The English track of set 10201 lacks the pilot and crew phrases** (ids 10001 and up). Greetings and small talk exist in both languages. Other sets (10101, 10202) are complete in both.
+- **Fast test bed:** the flight-school tutorials load in seconds and the Argon tutor (page 10190) speaks immediately. Use them for speaker-independent questions; use Boso Ta only for the final tuning. The only scenario with Boso Ta as narrator (`x4ep1_gamestart_tutorial2`) is hidden behind `debug="true"`.
+- **Launch options:** `-skipintro`, `-logfile debuglog.txt` (also makes script errors flash on screen), `-debug all` (slow, only needed for file I/O messages), `-voicelanguage 44|49`.

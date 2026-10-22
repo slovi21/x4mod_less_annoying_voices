@@ -1,10 +1,10 @@
 {
   "_doc": [
-    "Varianten der Mod. Nach Änderung: python -I tools/build_mod.py  und  python -I tools/validate_mod.py",
-    "kind=audio (empfohlen, 'alien'): ersetzt Boso Tas Audiodateien per Umleitung; Audio wird lokal mit tools/process_audio.py erzeugt (siehe audio_recipe) und liegt unter build/audio/<audio_variant>/.",
-    "kind=effects ('de', 'en'): nur Engine-Effekte in sound_library.xml. pitch = Resampling-Faktor (Tempo sinkt mit), lowpass = Engine-Skala 0..1. Für Slovi nicht ausreichend, als leichte Alternative behalten.",
-    "sound_attr_ops: Attribute an den Sound-Einträgen. noocclusion=true verhindert Dämpfung durch Geometrie (Boso hinter Glas); is3d=0 spielt Gespräche ohne Raumverarbeitung, damit die Blickrichtung keine Rolle spielt.",
-    "Bei den Sound-IDs: true = Eintrag hat in der Basis bereits <effects>; false = <effects> wird neu angelegt."
+    "Variant definitions. After a change: python -I tools/build_mod.py  and  python -I tools/validate_mod.py",
+    "kind=audio ('alien' German, 'alien_en' English): replaces Boso Ta's audio through a redirect; the audio is produced locally with tools/process_audio.py (see audio_recipe) and lives in build/audio/<audio_variant>/.",
+    "kind=effects ('de', 'en'): engine effects in sound_library.xml only. pitch = resampling factor (tempo changes with it), lowpass = engine scale 0..1. Not sufficient for the author; kept as a lightweight alternative.",
+    "sound_attr_ops: attributes on the sound entries. noocclusion=true prevents muffling by geometry (Boso sits behind glass); is3d=0 plays conversations without positional audio so head orientation does not matter.",
+    "Sound id map: true = the base entry already has <effects>; false = <effects> is created."
   ],
   "author": "Slovi",
   "version": "100",
@@ -43,10 +43,10 @@
       "id": "bosota_voice_alien",
       "kind": "audio",
       "audio_variant": "d12_alien_mid_g9",
-      "name_en": "Boso Ta - Alien Voice (German audio)",
-      "name_de": "Boso Ta – Alien-Stimme (deutsche Audiospur)",
-      "desc_en": "Replaces Boso Ta's German voice lines (voice set 10201) with processed copies: one octave down with shifted formants, frequency shift, chorus, mid-range focus for intelligibility, +9 dB with limiter. Conversations play in 2D so head orientation does not matter. Timing and lip sync unchanged. Audio is built locally with tools/process_audio.py and is not part of the repository.",
-      "desc_de": "Ersetzt Boso Tas deutsche Sprachzeilen (Stimm-Set 10201) durch bearbeitete Kopien: eine Oktave tiefer mit mitverschobenen Formanten, Frequenzverschiebung, Chorus, Mitten-Fokus für Verständlichkeit, +9 dB mit Begrenzer. Gespräche laufen zweidimensional, die Blickrichtung spielt keine Rolle. Timing und Mundbewegung unverändert. Die Audiodateien werden lokal mit tools/process_audio.py erzeugt und sind nicht Teil des Repositories.",
+      "name_en": "Boso Ta - less annoying VOICE (DE)",
+      "name_de": "Boso Ta – less annoying VOICE (DE)",
+      "desc_en": "German voice track only. Replaces Boso Ta's German voice lines (voice set 10201) with processed copies: one octave down with shifted formants, frequency shift, chorus, mid-range focus for intelligibility, +9 dB with limiter. Conversations play in 2D so head orientation does not matter. Timing and lip sync unchanged. Audio is built locally with tools/process_audio.py and is not part of the repository.",
+      "desc_de": "Nur deutsche Sprachausgabe. Ersetzt Boso Tas deutsche Sprachzeilen (Stimm-Set 10201) durch bearbeitete Kopien: eine Oktave tiefer mit mitverschobenen Formanten, Frequenzverschiebung, Chorus, Mitten-Fokus für Verständlichkeit, +9 dB mit Begrenzer. Gespräche laufen zweidimensional, die Blickrichtung spielt keine Rolle. Timing und Mundbewegung unverändert. Die Audiodateien werden lokal mit tools/process_audio.py erzeugt und sind nicht Teil des Repositories.",
       "audio_recipe": "python -I tools/process_audio.py --variant d12_alien_mid --gain-db 9 --src <voice-l049/10201/normal> --dst build/audio/d12_alien_mid_g9",
       "sound_attr_ops": [
         {
@@ -60,7 +60,7 @@
             "10201_comm_npc",
             "10201_comm_broadcast"
           ],
-          "_doc": "keine Dämpfung durch Geometrie (Boso sitzt hinter Glas); 10201_comm_signalleak hat das Attribut schon"
+          "_doc": "no muffling by geometry (Boso sits behind glass); 10201_comm_signalleak already has the attribute"
         },
         {
           "op": "replace",
@@ -70,7 +70,42 @@
             "10201_normal",
             "10201_normal_npc"
           ],
-          "_doc": "Gespräche zweidimensional: Slovi hörte von vorn 90 %, mit dem Rücken 60 % und unverständlich"
+          "_doc": "conversations in 2D: facing Boso 90 % of Karee's loudness, back turned 60 % and unintelligible"
+        }
+      ]
+    },
+    "alien_en": {
+      "id": "bosota_voice_alien_en",
+      "kind": "audio",
+      "audio_variant": "alien_mid_50_g4",
+      "name_en": "Boso Ta - less annoying VOICE (EN)",
+      "name_de": "Boso Ta – less annoying VOICE (EN)",
+      "desc_en": "English voice track only. Replaces Boso Ta's English voice lines (voice set 10201) with processed copies at half the strength of the German variant: 6 semitones down with shifted formants, frequency shift, chorus, mid-range focus for intelligibility, +4 dB with limiter. Conversations play in 2D so head orientation does not matter. Timing and lip sync unchanged. Audio is built locally with tools/process_audio.py and is not part of the repository.",
+      "desc_de": "Nur englische Sprachausgabe. Ersetzt Boso Tas englische Sprachzeilen (Stimm-Set 10201) durch bearbeitete Kopien mit halber Stärke der deutschen Variante: 6 Halbtöne tiefer mit mitverschobenen Formanten, Frequenzverschiebung, Chorus, Mitten-Fokus für Verständlichkeit, +4 dB mit Begrenzer. Gespräche laufen zweidimensional. Timing und Mundbewegung unverändert. Die Audiodateien werden lokal mit tools/process_audio.py erzeugt und sind nicht Teil des Repositories.",
+      "audio_recipe": "python -I tools/process_audio.py --variant alien_mid_50 --gain-db 4 --src <voice-l044/10201/normal> --dst build/audio/alien_mid_50_g4",
+      "sound_attr_ops": [
+        {
+          "op": "add",
+          "attr": "noocclusion",
+          "value": "true",
+          "ids": [
+            "10201_normal",
+            "10201_normal_npc",
+            "10201_comm",
+            "10201_comm_npc",
+            "10201_comm_broadcast"
+          ],
+          "_doc": "no muffling by geometry (Boso sits behind glass); 10201_comm_signalleak already has the attribute"
+        },
+        {
+          "op": "replace",
+          "attr": "is3d",
+          "value": "0",
+          "ids": [
+            "10201_normal",
+            "10201_normal_npc"
+          ],
+          "_doc": "conversations in 2D: facing Boso 90 % of Karee's loudness, back turned 60 % and unintelligible"
         }
       ]
     }

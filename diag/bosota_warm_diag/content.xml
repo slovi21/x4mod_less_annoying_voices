@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<content id="bosota_warm_diag" name="Boso Ta - DIAGNOSE v6 Umleitung (nicht spielen)" description="Diagnose-Build v6: Flugschul-Tutor auf fremde Audiodateien umgeleitet (Betty bzw. Boso Ta). Nur zum Hoertest, danach entfernen." author="Slovi" version="6" date="2026-10-22" enabled="1" save="0">
-  <text language="44" name="Boso Ta - DIAGNOSTIC v6 redirect (do not play)" description="Diagnostic build v6: flight-school tutor redirected to foreign audio files (Betty or Boso Ta). Listening test only, remove afterwards."/>
-  <text language="49" name="Boso Ta – DIAGNOSE v6 Umleitung (nicht spielen)" description="Diagnose-Build v6: Flugschul-Tutor auf fremde Audiodateien umgeleitet (Betty bzw. Boso Ta). Nur zum Hörtest, danach entfernen."/>
+<content id="bosota_warm_diag" name="Boso Ta - DIAGNOSE v7 Umleitung (nicht spielen)" description="Diagnose-Build v7: Flugschul-Tutor auf fremde Audiodateien umgeleitet (Betty bzw. Boso Ta). Nur zum Hoertest, danach entfernen." author="Slovi" version="7" date="2026-10-22" enabled="1" save="0">
+  <text language="44" name="Boso Ta - DIAGNOSTIC v7 redirect (do not play)" description="Diagnostic build v7: flight-school tutor redirected to foreign audio files (Betty or Boso Ta). Listening test only, remove afterwards."/>
+  <text language="49" name="Boso Ta – DIAGNOSE v7 Umleitung (nicht spielen)" description="Diagnose-Build v7: Flugschul-Tutor auf fremde Audiodateien umgeleitet (Betty bzw. Boso Ta). Nur zum Hörtest, danach entfernen."/>
 </content>

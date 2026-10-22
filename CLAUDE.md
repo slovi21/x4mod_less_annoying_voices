@@ -1,60 +1,63 @@
 # x4mod_less_annoying_voices
 
-**Projektmodus: P1** (mehrere Sitzungen, mehrere Meilensteine). Steuerung nach den Skills `anthropic-skills:projektsteuerung` und `anthropic-skills:dev-team-steuerung`. Sitzungsstart: `docs/projekt/MILESTONES.md`, `docs/projekt/CURRENT_STATE.md`, `git log` lesen, `./init.sh` laufen lassen, dann Standmeldung in fünf Zeilen.
+**Project mode: P1** (several sessions, several milestones). Managed with the skills `anthropic-skills:projektsteuerung` and `anthropic-skills:dev-team-steuerung`. Session start: read `docs/projekt/MILESTONES.md`, `docs/projekt/CURRENT_STATE.md` and `git log`, run `./init.sh`, then report the state in five lines before taking a task.
 
-## Was das ist
+## What this is
 
-X4-Foundations-Mod, die Boso Tas Stimme (Stimm-Set 10201) über Engine-Effekte in `libraries/sound_library.xml` tiefer und wärmer macht. Keine Audiodateien im Repo, keine Egosoft-Assets. Fachlicher Stand: `docs/phase0-befund.md`; Herleitung: `docs/X4_Boso_Ta_Voice_Mod_Handoff.md`.
+A mod for X4: Foundations that replaces Boso Ta's voice lines (voice set 10201) with processed copies through a redirect in `libraries/sound_library.xml`. No game audio in the repository. Verified engine facts: `docs/phase0-findings.md`. Plain-language explanation: `docs/HOW-IT-WORKS.md`. The research that started the project: `docs/X4_Boso_Ta_Voice_Mod_Handoff.md` (German, kept as the source document).
 
-## Aufbau
+## Layout
 
 ```
-config/variants.json          ← Varianten: 'alien' (Audio-Umleitung, empfohlen), 'de'/'en' (nur Engine-Effekte)
-tools/build_mod.py            ← erzeugt dist/<id>/ (content.xml + sound_library.xml-Diff inkl. Attribut-Patches)
-tools/validate_mod.py         ← prüft Selektoren und Attribut-Operationen gegen die echte sound_library.xml des Spiels
-tools/install_mod.py          ← kopiert genau eine Variante (XML + Audio aus build/audio/) nach <Spiel>\extensions\
-tools/process_audio.py        ← ffmpeg/Rubberband-Filterketten, zweistufige Lautheit, --gain-db; --list zeigt Varianten
-tools/pitch_flatten.py        ← Praat-Vorstufe (Intonationsspitzen stauchen), läuft in build/venv
-tools/x4cat_extract.py        ← .cat/.dat-Extraktor (Textindex + Rohdaten, kein XRCatTool nötig)
-dist/                         ← fertige Extensions ohne Audio (committed)
-diag/                         ← Diagnose-Extension v6 (Nachweis der Audio-Umleitung)
-build/                        ← extrahierte Spieldateien, bearbeitetes Audio, Hörproben, venv – ignoriert
-docs/projekt/                 ← MILESTONES.md, CURRENT_STATE.md
-docs/dev-team/                ← ROUTING-LOG.md, LESSONS.md
+config/variants.json       variants: 'alien' (German audio, recommended), 'alien_en' (English audio), 'de'/'en' (engine effects only)
+tools/build_mod.py         writes dist/<id>/ (content.xml + sound_library.xml diff incl. attribute patches)
+tools/validate_mod.py      checks selectors and attribute operations against the game's real sound_library.xml
+tools/install_mod.py       installs exactly one variant (XML + audio from build/audio/); refuses while X4.exe runs
+tools/process_audio.py     ffmpeg/Rubberband filter chains, two-pass loudness, --gain-db; --list shows variants
+tools/pitch_flatten.py     Praat pre-stage (intonation range compression), runs in build/venv
+tools/x4cat_extract.py     .cat/.dat extractor (text index + concatenated data, no XRCatTool needed)
+dist/                      built extensions without audio (committed)
+diag/                      diagnostic extension that proved the audio redirect
+build/                     extracted game files, processed audio, samples, venv, Workshop staging – ignored
+docs/projekt/              MILESTONES.md, CURRENT_STATE.md
+docs/dev-team/             ROUTING-LOG.md, LESSONS.md
 ```
 
-## Befehle
+## Commands
 
 ```bash
-python -I tools/process_audio.py --variant d12_alien_mid --gain-db 9 --src <originale> --dst build/audio/d12_alien_mid_g9
-python -I tools/build_mod.py            # alle Varianten bauen
-python -I tools/validate_mod.py         # gegen Spiel prüfen (Pflicht vor Install)
-python -I tools/install_mod.py alien    # alien | de | en; --remove entfernt alle bosota_*
+python -I tools/process_audio.py --variant d12_alien_mid --gain-db 9 --src <originals> --dst build/audio/d12_alien_mid_g9
+python -I tools/build_mod.py            # build all variants
+python -I tools/validate_mod.py         # check against the game (mandatory before install)
+python -I tools/install_mod.py alien    # alien | alien_en | de | en; --remove deletes every bosota_*
 ```
-`-I` = isolierter Python-Modus (ignoriert Umgebungsvariablen und Nutzer-Site-Pakete; schützt vor untergeschobenen Modulen). Spielordner per `--game-dir` oder `X4_GAME_DIR`, Standard `C:\Steam\steamapps\common\X4 Foundations`. ffmpeg: vollständiger Build (`winget install Gyan.FFmpeg`), liegt unter `%LOCALAPPDATA%\Microsoft\WinGet\Packages\Gyan.FFmpeg_*\...\bin\` und ist in der Tool-Shell nicht im PATH (`--ffmpeg <pfad>`).
 
-## Hörproben-Methode (hat sich bewährt)
+`-I` is Python's isolated mode. Game folder via `--game-dir` or `X4_GAME_DIR`, default `C:\Steam\steamapps\common\X4 Foundations`. ffmpeg: full build (`winget install Gyan.FFmpeg`), located under `%LOCALAPPDATA%\Microsoft\WinGet\Packages\Gyan.FFmpeg_*\...\bin\` and not on the tool shell's PATH (`--ffmpeg <path>`).
 
-Slovi entscheidet am Ohr, nicht an Zahlen, und hat nach eigener Aussage ein schlechtes Gehör. Deshalb: WAV-Proben per SendUserFile in Runden, eine Frage pro Runde, alle Proben gleich laut (−22 LUFS), Referenz immer dabei. **Pegel und Verständlichkeit nur im Spiel beurteilen**, nie an der WAV am PC (Verdeckung durch Spielkulisse, 3D-Verarbeitung).
+## Rules
 
-## Regeln
+- **Talk to Slovi in German. Write project documentation, commit messages and this file in English.** Every shell command shown to Slovi is explained option by option. His console is Windows PowerShell 5.1: no `grep`, no `&&`.
+- Never commit Egosoft files (audio, extracted XML); `build/` stays ignored.
+- Only one variant may be installed in the game; all of them patch the same sound ids.
+- Change parameters only in `config/variants.json`, then build and validate; never edit `dist/` by hand.
+- Never install or remove a mod while `X4.exe` is running (the installer enforces it).
+- Do not commit or push without being asked.
 
-- Kommunikation, Doku und Kommentare auf Deutsch. **Jeder gezeigte Shell-Befehl wird Option für Option erklärt.**
-- Keine Egosoft-Dateien (Audio, extrahierte XML) committen; `build/` bleibt ignoriert.
-- Es darf immer nur **eine** Variante im Spiel installiert sein (alle patchen dieselben Sound-IDs).
-- Parameter nur in `config/variants.json` ändern, dann bauen und validieren; `dist/` nie von Hand editieren.
-- Nicht ohne Auftrag committen oder pushen.
+## Routing paths
 
-## Routing-Pfade
-
-| Berührt | Mindeststufe |
+| Touches | Minimum level |
 |---|---|
-| `tools/install_mod.py` (löscht Ordner im Spielverzeichnis) | S2 |
-| `config/variants.json` Sound-ID-Listen (falsche ID = stiller Fehler im Spiel) | S2 |
+| `tools/install_mod.py` (deletes folders in the game directory) | S2 |
+| Sound id lists in `config/variants.json` (a wrong id fails silently in the game) | S2 |
 
-## Spielfakten (verifiziert 2026-10-22, X4 9.00)
+## Listening method (proven)
 
-- Boso Ta = Page **10201** (geteiltes Set „Boron NPC 1 / Boron rep / Misc Plot Characters"); 6 Sound-IDs `10201_normal|normal_npc|comm|comm_signalleak|comm_npc|comm_broadcast`, keine hat `<effects>`.
-- Effekte laut `sound_library.xsd`: `doppler`, `fade`, `filter`, `reverb`, `pitch(start,end,steps)` – kein Equalizer. Pitch = Resampling (Tempo ändert sich mit).
-- Kein DLC patcht `10201_*`; keine Dependency nötig. Audio liegt nur in `01–09.cat`.
-- Nutzerordner: `C:\Users\slovi\OneDrive\Documents\Egosoft\X4\34818113\`, Extension-Tabelle `content-MSI-PRODP20Z.xml`.
+Slovi decides by ear, not by numbers, and has poor hearing. WAV samples via SendUserFile in rounds, one question per round, all samples at −22 LUFS, the reference always included. **Judge level and intelligibility only in the game**, never on PC playback: station ambience and positional audio change everything.
+
+## Game facts (verified 2026-10-22, X4 9.00)
+
+- Boso Ta = page **10201**, shared only with the Boron faction representative. Six sound ids `10201_normal|normal_npc|comm|comm_signalleak|comm_npc|comm_broadcast`, none with effects in the base game.
+- The engine takes a redirected `<sample start>` path literally (no language suffix). One mod per voice track; only `voice-l044` and `voice-l049` exist.
+- `<effects>` offers `doppler`, `fade`, `filter`, `reverb`, `pitch(start,end,steps)`; no equalizer; pitch is resampling.
+- Conversations need `is3d="0"` and `noocclusion="true"` for a dark processed voice to stay intelligible.
+- User folder `C:\Users\slovi\OneDrive\Documents\Egosoft\X4\34818113\`, enable table `content-MSI-PRODP20Z.xml`. Any unsigned extension marks the game as modified; `save="0"` does not change that.

@@ -108,6 +108,22 @@ VARIANTS.update({
                       ",".join([DEEP12, "afreqshift=shift=-70", "chorus=0.6:0.9:50|60:0.4|0.32:0.25|0.4:2|1.3", MID])),
 })
 
+def alien_mid_scaled(k):
+    """Standardbearbeitung d12_alien_mid mit skalierter Stärke k (1.0 = deutsche Einstellung).
+    Skaliert: Tiefe (k Oktaven), Frequenzverschiebung, Chorus-Anteil. Der Mitten-Fokus bleibt voll (Verständlichkeit)."""
+    pitch = round(2 ** (-k), 4)
+    shift = round(-70 * k)
+    d1, d2 = round(0.4 * k, 3), round(0.32 * k, 3)
+    p1, p2 = round(2 * k, 2), round(1.3 * k, 2)
+    return ",".join([rb(pitch), f"afreqshift=shift={shift}", f"chorus=0.6:0.9:50|60:{d1}|{d2}:0.25|0.4:{p1}|{p2}", MID])
+
+
+VARIANTS.update({
+    "alien_mid_50": ("Standard auf 50 %: -6 Halbtöne, Verschiebung -35 Hz, halber Chorus, voller Mitten-Fokus (für Englisch)", alien_mid_scaled(0.5)),
+    "alien_mid_35": ("Standard auf 35 %: -4,2 Halbtöne, Verschiebung -25 Hz", alien_mid_scaled(0.35)),
+    "alien_mid_25": ("Standard auf 25 %: -3 Halbtöne, Verschiebung -18 Hz", alien_mid_scaled(0.25)),
+})
+
 VARIANTS.update({
     "tank_oct1.5": ("Alien im Tank, 1,5 Oktaven unter Original (-18 Halbtöne)", alien_tank_pitch(0.3536)),
     "tank_oct1.5_presence": ("Alien im Tank -18 Halbtöne, Tiefpass auf 3,2 kHz geöffnet, +4 dB um 1,8 kHz: setzt sich im Spielmix durch",

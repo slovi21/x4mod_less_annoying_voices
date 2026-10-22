@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <diff>
   <!--
-    Diagnose-Build v6 (2026-10-22): Test der Audio-UMLEITUNG (Plan B) am Flugschul-Tutor (10190), gehörfest.
+    Diagnose-Build v7 (wie v6, Gegenprobe-Ordner heißt jetzt voice-l044 statt voice-l049; Test unter -voicelanguage 44) (2026-10-22): Test der Audio-UMLEITUNG (Plan B) am Flugschul-Tutor (10190), gehörfest.
     sample start zeigt auf extensions\bosota_warm_diag\voice\10190\(kontext). Im Spielordner liegen dort
     die Tutor-Dateinamen, aber mit fremdem Inhalt:
       voice\10190\...       = Bettys Stimme (Bordcomputer, weiblich)

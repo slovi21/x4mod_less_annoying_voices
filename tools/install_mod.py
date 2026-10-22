@@ -1,10 +1,11 @@
 """Kopiert GENAU EINE gebaute Variante in den extensions-Ordner des Spiels.
 
-Vorher werden dort alle Ordner entfernt, deren Name mit 'bosota_warm_' beginnt – es darf immer nur eine
+Vorher werden dort alle Ordner entfernt, deren Name mit 'bosota_' beginnt – es darf immer nur eine
 Variante aktiv sein (alle patchen dieselben Sound-IDs). Andere Mods werden nicht angefasst.
+Verweigert den Austausch, solange X4 läuft (das laufende Spiel würde sonst gelöschte Dateien suchen).
 
-Aufruf: python -I tools/install_mod.py de|en|test [--game-dir "<X4-Ordner>"]
-        python -I tools/install_mod.py --remove          (alle bosota_warm_* entfernen)
+Aufruf: python -I tools/install_mod.py alien|alien_en|de|en [--game-dir "<X4-Ordner>"]
+        python -I tools/install_mod.py --remove          (alle bosota_* entfernen)
 Spielordner: --game-dir, sonst Umgebungsvariable X4_GAME_DIR, sonst C:\\Steam\\steamapps\\common\\X4 Foundations
 """
 import argparse
@@ -12,6 +13,7 @@ import json
 import os
 import shutil
 import stat
+import subprocess
 import sys
 import time
 from pathlib import Path
@@ -42,6 +44,17 @@ def clear_readonly_tree(root):
         os.chmod(dirpath, stat.S_IWRITE)
 
 
+def game_running():
+    """True, wenn X4.exe läuft. Mod-Wechsel bei laufendem Spiel führen zu stummen Stimmen: Das Spiel hat
+    den alten Diff geladen und findet die gelöschten Audiodateien nicht mehr (passiert am 2026-10-22)."""
+    try:
+        # tasklist schreibt in der OEM-Codepage (deutsch: cp850); nur nach ASCII "X4.exe" suchen, Rest tolerant dekodieren
+        raw = subprocess.run(["tasklist", "/FI", "IMAGENAME eq X4.exe", "/NH"], capture_output=True, timeout=10).stdout
+    except Exception:  # noqa: BLE001 – kein tasklist (z. B. nicht Windows): nicht blockieren
+        return False
+    return b"X4.exe" in (raw or b"")
+
+
 def rmtree_retry(path, tries=5, delay=0.5):
     """Löscht einen Ordner samt Inhalt; räumt Schreibschutz weg und wiederholt bei verzögerter Handle-Freigabe."""
     handler = {"onexc": _clear_readonly_and_retry} if sys.version_info >= (3, 12) else {"onerror": _clear_readonly_and_retry}
@@ -62,6 +75,7 @@ def main():
     ap.add_argument("variant", nargs="?", choices=sorted(CFG["variants"]))
     ap.add_argument("--game-dir", default=os.environ.get("X4_GAME_DIR", DEFAULT_GAME_DIR))
     ap.add_argument("--remove", action="store_true", help="nur entfernen, nichts installieren")
+    ap.add_argument("--force", action="store_true", help="auch bei laufendem X4 ausführen (nicht empfohlen)")
     args = ap.parse_args()
     if not args.variant and not args.remove:
         ap.error("Variante (" + "|".join(sorted(CFG["variants"])) + ") oder --remove angeben")
@@ -69,6 +83,8 @@ def main():
     ext_root = Path(args.game_dir) / "extensions"
     if not ext_root.is_dir():
         sys.exit(f"FEHLER: {ext_root} existiert nicht – Spielordner prüfen (--game-dir / X4_GAME_DIR)")
+    if Path(args.game_dir).resolve() == Path(DEFAULT_GAME_DIR).resolve() and not args.force and game_running():
+        sys.exit("FEHLER: X4 läuft. Erst das Spiel beenden, dann installieren – sonst sucht das laufende Spiel gelöschte Dateien und Boso ist stumm. (--force übergeht die Prüfung.)")
 
     for d in ext_root.iterdir():
         if d.is_dir() and d.name.startswith(PREFIX):

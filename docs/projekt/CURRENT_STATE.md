@@ -27,6 +27,7 @@ Nothing (removed for the Workshop test). The last locally installed variant was 
 - Tooling: `tools/voice_convert_elevenlabs.py` (`quota`, `voices`, `convert`, `tts`, `tts-batch`, resumable), venv `build/venv` with requests. Batch run started into `build/tts/will_de/` (log `build/tts_will_de.log`).
 
 ## Open
+- Possible follow-up, decision pending: replace all 15 Boron voice sets (10201–10205 generic, 10251–10260 mission characters). Counted 2026-10-22: remaining 3,044 DE lines / 151,466 characters and 3,014 EN lines / 120,639 characters, ≈ 60,000 credits for both languages, half a day of tooling (multi-page support in config/build/coverage, no 2D for generic pilots) plus 2–3 hours of voice selection by Slovi. Slovi first checks in a new save how annoying the other Boron voices are.
 - Finish the TTS batch, post-process with `will_dark` + loudness + gain, fall back to Alien audio for the 5 textless ids, build variant, test in game.
 - Confirm the English level (+4 dB) in the game, then switch back to German.
 - Workshop, German item: first upload done 2026-10-22, **item id 3824406333** (hidden). Variant `alien_ws` (`ws_3824406333`, version 101) built and staged under `build/workshop/stage2/extensions/ws_3824406333/`; the `update` upload with the corrected redirect path is the next step, then set visibility. English item not yet created (same procedure with `stage1_en`).

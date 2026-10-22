@@ -8,7 +8,7 @@ Goal: Boso Ta's voice stops being annoying while his dialogue stays intelligible
 | 2 | A test extension audibly changes a voice through `<effects>` | game starts without "No matching node"; a speaker is clearly deeper | **reached** 2026-10-22 (flight-school tutor with pitch 0.3: "extremely slow and deep") |
 | 3 | Boso Ta is no longer annoying in the German track and stays intelligible | Slovi's verdict at the HQ, facing him, back turned, and during background chatter; parameters frozen in `config/variants.json` | **reached** 2026-10-22 ("that works now"; variant `d12_alien_mid`, +9 dB, 2D playback) |
 | 4 | An English variant with its own strength | same test with `-voicelanguage 44` | **reached** 2026-10-22 (half strength, +4 dB; verdict "fits", level corrected by 2 dB) |
-| 5 | Both variants are packaged and documented; the validator passes | `python -I tools/validate_mod.py` reports 0 errors; README covers building, installing, removing and distributing | in progress – docs rewritten in English, Workshop upload pending |
+| 5 | Both variants are packaged and documented; the validator passes | `python -I tools/validate_mod.py` reports 0 errors; README covers building, installing, removing and distributing | **reached** 2026-10-22 (both Workshop items uploaded, hidden; ModDB package assembled) |
 | 6 | Audio redirect proven as the delivery mechanism | processed files load through a `<sample>` redirect, lip sync intact | **reached** 2026-10-22 (diagnostic v6, installed variants) |
 
 ## Change log

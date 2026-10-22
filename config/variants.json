@@ -181,6 +181,43 @@
         }
       ],
       "version": "100"
+    },
+    "alien_en_ws": {
+      "id": "ws_3824446410",
+      "kind": "audio",
+      "audio_variant": "alien_mid_50_g4",
+      "name_en": "Boso Ta - less annoying VOICE (EN)",
+      "name_de": "Boso Ta – less annoying VOICE (EN)",
+      "desc_en": "English voice track only. Replaces Boso Ta's English voice lines (voice set 10201) with processed copies at half the strength of the German variant: 6 semitones down with shifted formants, frequency shift, chorus, mid-range focus for intelligibility, +4 dB with limiter. Conversations play in 2D so head orientation does not matter. Timing and lip sync unchanged. Audio is built locally with tools/process_audio.py and is not part of the repository.",
+      "desc_de": "Nur englische Sprachausgabe. Ersetzt Boso Tas englische Sprachzeilen (Stimm-Set 10201) durch bearbeitete Kopien mit halber Stärke der deutschen Variante: 6 Halbtöne tiefer mit mitverschobenen Formanten, Frequenzverschiebung, Chorus, Mitten-Fokus für Verständlichkeit, +4 dB mit Begrenzer. Gespräche laufen zweidimensional. Timing und Mundbewegung unverändert. Die Audiodateien werden lokal mit tools/process_audio.py erzeugt und sind nicht Teil des Repositories.",
+      "audio_recipe": "python -I tools/process_audio.py --variant alien_mid_50 --gain-db 4 --src <voice-l044/10201/normal> --dst build/audio/alien_mid_50_g4",
+      "sound_attr_ops": [
+        {
+          "op": "add",
+          "attr": "noocclusion",
+          "value": "true",
+          "ids": [
+            "10201_normal",
+            "10201_normal_npc",
+            "10201_comm",
+            "10201_comm_npc",
+            "10201_comm_broadcast"
+          ],
+          "_doc": "no muffling by geometry (Boso sits behind glass); 10201_comm_signalleak already has the attribute"
+        },
+        {
+          "op": "replace",
+          "attr": "is3d",
+          "value": "0",
+          "ids": [
+            "10201_normal",
+            "10201_normal_npc"
+          ],
+          "_doc": "conversations in 2D: facing Boso 90 % of Karee's loudness, back turned 60 % and unintelligible"
+        }
+      ],
+      "version": "101",
+      "_doc": "Steam Workshop build of the English variant (item 3824446410, created 2026-10-22 with XML-only content because creating the item with audio timed out twice, Steam error 16)."
     }
   }
 }

@@ -3,14 +3,14 @@
 **Milestone:** 5 in progress (packaging and distribution). Milestones 1, 2, 3, 4 and 6 reached on 2026-10-22.
 
 ## Installed in the game right now
-`bosota_voice_will_de` – the new German voice (ElevenLabs "Will", Eleven v4 Turbo, `will_dark` + 6 dB, folder `build/audio/will_dark_g6`, −16.0 LUFS, 2,324 files incl. 5 Alien fallbacks). Installed 2026-10-22 after the TTS batch (2,319 lines, 0 failures). Actual credit use: 40,286 for the whole German run including samples; 85,660 credits remain on the Creator plan, enough for an English Will run (129,232 characters) if wanted. Slovi: "passt gut".
+Nothing (removed for the Workshop test). The last locally installed variant was `bosota_voice_will_de` – the new German voice (ElevenLabs "Will", Eleven v4 Turbo, `will_dark` + 6 dB, folder `build/audio/will_dark_g6`, −16.0 LUFS, 2,324 files incl. 5 Alien fallbacks). Installed 2026-10-22 after the TTS batch (2,319 lines, 0 failures). Actual credit use: 40,286 for the whole German run including samples; 85,660 credits remain on the Creator plan, enough for an English Will run (129,232 characters) if wanted. Slovi: "passt gut".
 
-## Release packages (2026-10-22)
-- DE Workshop: `build/workshop/stage2/extensions/ws_3824406333` (Will, version 102) → `WorkshopTool update`, see `docs/RELEASE.md`.
-- DE ModDB: `C:\Users\slovi\Desktop\Boso_Ta_less_annoying_VOICE_DE_v1.0.zip` (folder `bosota_voice_will_de`).
-- EN Workshop: `build/workshop/stage1_en/extensions/bosota_voice_alien_en` → first `publishx4`, then a `ws_<number>` variant.
-- EN ModDB: `C:\Users\slovi\Desktop\Boso_Ta_less_annoying_VOICE_EN_v1.0.zip` (folder `bosota_voice_alien_en`, +4 dB).
-- Previews `build/workshop/preview_DE.jpg`, `preview_EN.jpg`; description `docs/release/MODDB_DESCRIPTION.md`; patch procedure `docs/MAINTENANCE.md`; coverage indexes saved under `build/index/`.
+## Published (2026-10-22, both hidden until Slovi sets visibility)
+- **Steam Workshop DE:** item **3824406333**, folder `ws_3824406333`, Will voice, version 102, updated with audio and preview.
+- **Steam Workshop EN:** item **3824446410**, folder `ws_3824446410`, Alien EN (+4 dB), version 101, created XML-only then updated with audio. Two earlier creation attempts timed out (Steam error 16); check "Your Workshop files" for stray empty items and delete them if any exist.
+- **ModDB package:** `build/moddb_package/` – both ZIPs (DE 94 MB, EN 59 MB), `logo_800x800.jpg`, three screenshots (two previews, Slovi's own in-game shot), description as .md and .txt, `README_UPLOAD.txt` with the form fields. Not uploaded yet; needs Slovi's ModDB account. No images from third-party sites were used.
+- Local game folder: all `bosota_*` extensions removed so the Workshop subscription can be tested cleanly. Subscribing installs the item under `Documents\Egosoft\X4\34818113\extensions\ws_3824406333`. Remove `-voicelanguage 44` from the launch options first.
+- Staging copies: `build/workshop/stage2` (DE), `build/workshop/stage2_en` and `%LOCALAPPDATA%\x4mod_workshop` (EN); previews `build/workshop/preview_DE.jpg`, `preview_EN.jpg`; procedure `docs/RELEASE.md`; patch procedure `docs/MAINTENANCE.md`; coverage indexes under `build/index/`.
 
 ## Done
 - German variant `alien`: `d12_alien_mid` + 9 dB (one octave down, formants shifted, frequency shift −70 Hz, chorus, mid-range focus 220 Hz–5.5 kHz with +4 dB at 1.4 kHz and +2 dB at 2.8 kHz, gentle compression), `is3d="0"` on both conversation entries, `noocclusion="true"` on five entries. Slovi: "that works now, I can start a new game without being annoyed by Boso".

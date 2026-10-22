@@ -5,7 +5,12 @@ Two items, one per voice track. Nothing in this file requires Python on the user
 | Item | Folder name in the game | Audio | Source for packaging |
 |---|---|---|---|
 | **DE** – Boso Ta – less annoying VOICE (DE) | `ws_3824406333` (Workshop) / `bosota_voice_will_de` (ModDB) | 2,324 lines re-spoken with the ElevenLabs voice Will (Eleven v4 Turbo), post-processed `will_dark`, +6 dB | `build/workshop/stage2/extensions/ws_3824406333`, `build/workshop/moddb/bosota_voice_will_de` |
-| **EN** – Boso Ta – less annoying VOICE (EN) | `ws_<number>` (after first upload) / `bosota_voice_alien_en` (ModDB) | 1,750 originals processed with the Alien chain at half strength, +4 dB | `build/workshop/stage1_en/extensions/bosota_voice_alien_en` for the first upload, then `stage2_en` |
+| **EN** – Boso Ta – less annoying VOICE (EN) | `ws_3824446410` (Workshop) / `bosota_voice_alien_en` (ModDB) | 1,750 originals processed with the Alien chain at half strength, +4 dB | `build/workshop/stage2_en/extensions/ws_3824446410`, `build/workshop/moddb_en/bosota_voice_alien_en` |
+
+Both Workshop items were created on 2026-10-22 and are hidden until their visibility is changed on the item pages. Two lessons from the EN upload:
+
+- Creating a new item together with 56 MB of audio timed out twice (Steam error 16), while updating an existing item with 90 MB worked. Create new items with XML-only content first (`stage0_<lang>`), then add the audio with `update`.
+- The first `update` of a freshly created item failed with Steam error 9 ("file not found") as long as `-preview` was passed; the same command without `-preview` succeeded. The preview set at creation stays; change it later with `updatepreview` if needed. (Copying the staging folder out of OneDrive was tried first and made no difference.)
 
 The Workshop folder name is part of the redirect path inside the mod, so Workshop builds and ModDB builds are different builds of the same audio. `tools/build_mod.py` derives the path from the variant's `id`.
 
@@ -21,11 +26,15 @@ Prerequisites: X Tools installed (`C:\Steam\steamapps\common\X Tools`), Steam ru
 
 `-namedesc up` pushes the title and description from `content.xml`. The version in `content.xml` (102) is higher than the first upload (100), so `-minor` is not needed. Then open the item page (`showpage -path ...`) and set visibility to public.
 
-**EN (no item yet):**
+**EN (item 3824446410, created 2026-10-22):** variant `alien_en_ws`, staged under `build/workshop/stage2_en/extensions/ws_3824446410`. Further updates:
 
-1. `.\WorkshopTool.exe publishx4 -path "<repo>\build\workshop\stage1_en\extensions\bosota_voice_alien_en" -preview "<repo>\build\workshop\preview_EN.jpg" -buildcat` → answer `y`. The tool writes `id="ws_<number>"` into that folder's `content.xml`. Leave the item hidden.
-2. Add a variant `alien_en_ws` in `config/variants.json` with `"id": "ws_<number>"` and `"version": "101"` (copy of `alien_en`), run `build_mod.py`, `validate_mod.py`, then `install_mod.py alien_en_ws --game-dir build/workshop/stage2_en`.
-3. `.\WorkshopTool.exe update -path "<repo>\build\workshop\stage2_en\extensions\ws_<number>" -buildcat -namedesc up -changenote "Folder name corrected for the Workshop"`, then set visibility.
+```
+.\WorkshopTool.exe update -path "<repo>\build\workshop\stage2_en\extensions\ws_3824446410" -buildcat -changenote "<what changed>"
+```
+
+Raise `version` of `alien_en_ws` in `config/variants.json` before each update, or pass `-minor`. `-batchmode` skips the y/n prompt.
+
+**Creating a further item (for example another language or speaker):** publish with XML-only content first, read the `ws_` id the tool writes into `content.xml`, add a variant with that id, then `update` with the audio.
 
 **Testing a Workshop item:** subscribe, remove the local copy from `<game>\extensions` (`install_mod.py --remove`, game closed), start the game; Steam installs the item under `Documents\Egosoft\X4\<id>\extensions\ws_<number>`.
 

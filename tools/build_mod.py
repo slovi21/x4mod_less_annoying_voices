@@ -53,6 +53,16 @@ def build_redirect_diff(v, cfg):
         out.append(f"  <replace sel=\"/soundlibrary/sound[@id='{sound_id}']/sample\">")
         out.append(f'    <sample start="{target}"/>')
         out.append("  </replace>")
+    # Zusätzliche Attribut-Operationen aus der Konfiguration (z. B. noocclusion, is3d):
+    #   {"op": "add", "ids": [...], "attr": "noocclusion", "value": "true"}      -> Attribut neu anlegen
+    #   {"op": "replace", "ids": [...], "attr": "is3d", "value": "0"}            -> vorhandenes Attribut ersetzen
+    for item in v.get("sound_attr_ops", []):
+        for sound_id in item["ids"]:
+            sel = f"/soundlibrary/sound[@id='{sound_id}']"
+            if item["op"] == "add":
+                out.append(f'  <add sel="{sel}" type="@{item["attr"]}">{item["value"]}</add>')
+            else:
+                out.append(f'  <replace sel="{sel}/@{item["attr"]}">{item["value"]}</replace>')
     out.append("</diff>")
     return "\n".join(out) + "\n"
 

@@ -9,25 +9,33 @@ X4-Foundations-Mod, die Boso Tas Stimme (Stimm-Set 10201) über Engine-Effekte i
 ## Aufbau
 
 ```
-config/variants.json          ← einzige Stellschraube: pitch, lowpass, reverb je Variante
-tools/build_mod.py            ← erzeugt dist/<id>/ (content.xml + sound_library.xml-Diff)
-tools/validate_mod.py         ← prüft XPath-Selektoren gegen die echte sound_library.xml des Spiels
-tools/install_mod.py          ← kopiert genau eine Variante nach <Spiel>\extensions\
+config/variants.json          ← Varianten: 'alien' (Audio-Umleitung, empfohlen), 'de'/'en' (nur Engine-Effekte)
+tools/build_mod.py            ← erzeugt dist/<id>/ (content.xml + sound_library.xml-Diff inkl. Attribut-Patches)
+tools/validate_mod.py         ← prüft Selektoren und Attribut-Operationen gegen die echte sound_library.xml des Spiels
+tools/install_mod.py          ← kopiert genau eine Variante (XML + Audio aus build/audio/) nach <Spiel>\extensions\
+tools/process_audio.py        ← ffmpeg/Rubberband-Filterketten, zweistufige Lautheit, --gain-db; --list zeigt Varianten
+tools/pitch_flatten.py        ← Praat-Vorstufe (Intonationsspitzen stauchen), läuft in build/venv
 tools/x4cat_extract.py        ← .cat/.dat-Extraktor (Textindex + Rohdaten, kein XRCatTool nötig)
-dist/bosota_warm_{de,en,test} ← fertige Extensions (committed, das sind die Downloads)
-build/                        ← extrahierte Spieldateien, ignoriert
+dist/                         ← fertige Extensions ohne Audio (committed)
+diag/                         ← Diagnose-Extension v6 (Nachweis der Audio-Umleitung)
+build/                        ← extrahierte Spieldateien, bearbeitetes Audio, Hörproben, venv – ignoriert
 docs/projekt/                 ← MILESTONES.md, CURRENT_STATE.md
-docs/dev-team/ROUTING-LOG.md  ← Routing-Protokoll
+docs/dev-team/                ← ROUTING-LOG.md, LESSONS.md
 ```
 
 ## Befehle
 
 ```bash
+python -I tools/process_audio.py --variant d12_alien_mid --gain-db 9 --src <originale> --dst build/audio/d12_alien_mid_g9
 python -I tools/build_mod.py            # alle Varianten bauen
 python -I tools/validate_mod.py         # gegen Spiel prüfen (Pflicht vor Install)
-python -I tools/install_mod.py de       # de | en | test; --remove entfernt alle bosota_warm_*
+python -I tools/install_mod.py alien    # alien | de | en; --remove entfernt alle bosota_*
 ```
-`-I` = isolierter Python-Modus (ignoriert Umgebungsvariablen und Nutzer-Site-Pakete; schützt vor untergeschobenen Modulen). Spielordner per `--game-dir` oder `X4_GAME_DIR`, Standard `C:\Steam\steamapps\common\X4 Foundations`.
+`-I` = isolierter Python-Modus (ignoriert Umgebungsvariablen und Nutzer-Site-Pakete; schützt vor untergeschobenen Modulen). Spielordner per `--game-dir` oder `X4_GAME_DIR`, Standard `C:\Steam\steamapps\common\X4 Foundations`. ffmpeg: vollständiger Build (`winget install Gyan.FFmpeg`), liegt unter `%LOCALAPPDATA%\Microsoft\WinGet\Packages\Gyan.FFmpeg_*\...\bin\` und ist in der Tool-Shell nicht im PATH (`--ffmpeg <pfad>`).
+
+## Hörproben-Methode (hat sich bewährt)
+
+Slovi entscheidet am Ohr, nicht an Zahlen, und hat nach eigener Aussage ein schlechtes Gehör. Deshalb: WAV-Proben per SendUserFile in Runden, eine Frage pro Runde, alle Proben gleich laut (−22 LUFS), Referenz immer dabei. **Pegel und Verständlichkeit nur im Spiel beurteilen**, nie an der WAV am PC (Verdeckung durch Spielkulisse, 3D-Verarbeitung).
 
 ## Regeln
 

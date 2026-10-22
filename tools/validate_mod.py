@@ -81,6 +81,33 @@ def validate(ext_dir, base_root):
     touched = []
     for op in diff:
         sel = op.get("sel", "")
+        # Attribut-Operationen: <add sel="…" type="@name">wert</add> und <replace sel="…/@name">wert</replace>
+        attr_add = op.get("type", "")
+        attr_sel = sel.rsplit("/@", 1) if "/@" in sel else None
+        if op.tag == "add" and attr_add.startswith("@"):
+            name = attr_add[1:]
+            targets = root.findall(et_xpath(sel))
+            if not targets:
+                errors.append(f"No matching node: {sel}")
+            for t in targets:
+                if t.get(name) is not None:
+                    errors.append(f"{sel}: Attribut {name} existiert bereits – replace statt add verwenden")
+                t.set(name, (op.text or "").strip())
+            if "@id='" in sel:
+                touched.append(sel.split("@id='")[1].split("'")[0])
+            continue
+        if op.tag == "replace" and attr_sel:
+            parent_sel, name = attr_sel
+            targets = root.findall(et_xpath(parent_sel))
+            if not targets:
+                errors.append(f"No matching node: {sel}")
+            for t in targets:
+                if t.get(name) is None:
+                    errors.append(f"{sel}: Attribut {name} fehlt – add statt replace verwenden")
+                t.set(name, (op.text or "").strip())
+            if "@id='" in sel:
+                touched.append(sel.split("@id='")[1].split("'")[0])
+            continue
         targets = root.findall(et_xpath(sel))
         if len(targets) == 0:
             errors.append(f"No matching node: {sel}")
@@ -126,14 +153,17 @@ def validate(ext_dir, base_root):
         if node is None:
             continue
         eff = node.find("effects")
-        desc = (node.get("description") or "")[:48]
+        desc = (node.get("description") or "")[:40]
         if eff is None:
             kids = "KEINE"
         else:
             kids = ", ".join(
                 e.tag + "(" + " ".join(f"{k}={val}" for k, val in e.attrib.items()) + ")" for e in eff
             )
-        print(f"  {sid:24s} [{desc}] -> effects: {kids}")
+        smp = node.find("sample")
+        start = (smp.get("start") if smp is not None else "?") or "?"
+        flags = " ".join(f"{a}={node.get(a)}" for a in ("is3d", "noocclusion") if node.get(a) is not None)
+        print(f"  {sid:24s} [{desc}] {flags} sample={start} effects: {kids}")
     return errors, warnings
 
 

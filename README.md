@@ -1,55 +1,66 @@
-# Boso Ta – wärmere Stimme (X4: Foundations)
+# Boso Ta – weniger nervige Stimme (X4: Foundations)
 
-Kleine Mod für **X4: Foundations 9.00**, die die Stimme des Boronen-Beraters **Boso Ta** tiefer und wärmer klingen lässt. Sie ändert **keine Audiodateien**, sondern hängt per XML-Diff Engine-Effekte (Pitch, Tiefpass) an seine Sound-Einträge in `libraries/sound_library.xml`. Keine Egosoft-Assets enthalten, Deinstallation = Ordner löschen, Spielstände werden nicht als modifiziert markiert (`save="0"`).
+Mod für **X4: Foundations 9.00**, die die Stimme des Boronen-Beraters **Boso Ta** erträglich macht. Ergebnis nach sieben Hörrunden: eine Oktave tiefer, fremder Klang („Alien"), Mitten-Filter für Verständlichkeit, Gespräche ohne Raumverarbeitung. Tempo, Pausen und Mundbewegung bleiben exakt wie im Original, weil die Tonhöhe tempoerhaltend (Rubberband) geändert wird.
 
-> **Hinweis zum Umfang:** Boso Ta spricht mit dem Stimm-Set **10201** („Boron NPC 1"). Dieses Set teilen sich auch der Boronen-Fraktionsvertreter und einige Nebenfiguren – sie klingen mit dieser Mod ebenfalls tiefer.
+Die Mod enthält **keine Egosoft-Audiodateien im Repository**. Die bearbeiteten Dateien werden lokal aus deiner Spielinstallation erzeugt (ca. 10 Minuten) und beim Installieren in den Spielordner kopiert. Deinstallation = Ordner löschen. Spielstände werden nicht als modifiziert markiert (`save="0"`).
 
-## Varianten (immer nur **eine** installieren)
+> Boso Ta spricht über das Stimm-Set **10201**. Der einzige weitere Nutzer ist der Boronen-Fraktionsvertreter (derselbe Sprecher), der die Stimme mitbekommt. Zufalls-NPCs sind nicht betroffen.
 
-| Ordner | Für | Pitch | Tiefpass |
-|---|---|---|---|
-| `dist/bosota_warm_de` | deutsche Sprachspur – stark | 0.841 (−3 Halbtöne) | 0.25 |
-| `dist/bosota_warm_en` | englische Sprachspur – mittel | 0.891 (−2 Halbtöne) | 0.35 |
-| `dist/bosota_warm_test` | Schnelltest: DE-Werte zusätzlich auf Bordcomputer Betty, sofort beim Spielstart hörbar | 0.841 | 0.25 |
+## Was die Mod technisch tut
 
-Die Pitch-Absenkung ist ein Resampling: Die Stimme wird im gleichen Maß langsamer (−3 Halbtöne ≈ 19 %). Das ist die einzige Form von Tonhöhenänderung, die die Engine im XML anbietet.
+1. `libraries/sound_library.xml` (XML-Diff): Die sechs Sound-Einträge `10201_*` zeigen statt auf die Originaldateien auf `extensions\bosota_voice_alien\voice\10201\normal\`. Die Engine lädt diesen Pfad wörtlich, ohne Sprachsuffix (Nachweis: `diag/`).
+2. Dieselben Einträge bekommen `noocclusion="true"` (keine Dämpfung durch die Tank-Scheibe) und die Gesprächseinträge `is3d="0"` (keine Abhängigkeit von Blickrichtung und Abstand).
+3. `voice/10201/normal/*.ogg`: 2 324 deutsche Zeilen, bearbeitet mit ffmpeg (Rezept in `config/variants.json` → `audio_recipe`), auf −22 LUFS normalisiert und um 9 dB angehoben, weil die dunkle Stimme sonst im Spielmix untergeht.
 
-## Installation
+Alle Funk-Kontexte nutzen denselben bearbeiteten Satz; das originale Radio-Filter des Funks entfällt.
 
-**Von Hand:** Den gewünschten Ordner aus `dist/` nach `<X4-Spielordner>\extensions\` kopieren, z. B. `C:\Steam\steamapps\common\X4 Foundations\extensions\bosota_warm_de\`. Im Spiel unter *Hauptmenü → Erweiterungen* prüfen, dass der Eintrag erscheint und aktiv ist.
+## Installation (eigene Spielinstallation, Windows, PowerShell)
 
-**Per Skript** (Python 3, im Repo-Ordner):
+Voraussetzungen: Python 3, ffmpeg (vollständiger Build mit Rubberband):
 
-```bash
-python -I tools/install_mod.py de
+```powershell
+winget install Gyan.FFmpeg
 ```
-`python -I` startet Python im isolierten Modus (keine Umgebungsvariablen, keine Nutzer-Site-Pakete); `tools/install_mod.py` ist das Installationsskript; `de` wählt die Variante (`en`, `test` ebenso). Das Skript entfernt vorher alle `bosota_warm_*`-Ordner im Spiel und kopiert dann genau eine Variante. Anderer Spielordner: `--game-dir "<Pfad>"` anhängen oder Umgebungsvariable `X4_GAME_DIR` setzen.
+`winget` ist der Windows-Paketmanager, `install` installiert ein Paket, `Gyan.FFmpeg` ist der vollständige ffmpeg-Build von gyan.dev. Danach die Konsole neu öffnen.
 
-**Deinstallation:** Ordner löschen oder `python -I tools/install_mod.py --remove` (`--remove` = nur entfernen, nichts installieren).
+Dann im Repo-Ordner:
 
-## Selbst abstimmen
+```powershell
+python -I tools/x4cat_extract.py "C:\Steam\steamapps\common\X4 Foundations\01.cat" build\orig "voice-l049/10201/normal/*"
+```
+`-I` startet Python isoliert (keine Umgebungsvariablen, keine Nutzerpakete). Das Skript liest den Katalogindex `01.cat` und die zugehörige `01.dat`, zieht alle Dateien mit dem Präfix `voice-l049/10201/normal/` (Boso Tas deutsche Zeilen) heraus und legt sie unter `build\orig` ab. Liegen Zeilen auch in `02.cat` bis `09.cat`, den Befehl dafür wiederholen; spätere Kataloge überschreiben frühere.
 
-1. Werte in `config/variants.json` ändern (`pitch`, `lowpass`, optional `reverb`).
-2. Bauen und prüfen:
-   ```bash
-   python -I tools/build_mod.py && python -I tools/validate_mod.py
-   ```
-   `build_mod.py` schreibt die Varianten nach `dist/`; `&&` führt den zweiten Befehl nur aus, wenn der erste fehlerfrei war; `validate_mod.py` entpackt die echte `sound_library.xml` aus dem Spiel nach `build/` und prüft, ob jeder XPath-Selektor genau einen Eintrag trifft und keine doppelten Elemente entstehen.
-3. Installieren (siehe oben) und im Spiel hören. Nur einen Parameter pro Durchlauf ändern.
+```powershell
+python -I tools/process_audio.py --variant d12_alien_mid --gain-db 9 --src build\orig\voice-l049\10201\normal --dst build\audio\d12_alien_mid_g9
+```
+`--variant` wählt die Filterkette (`--list` zeigt alle), `--gain-db 9` hebt nach der Normalisierung um 9 dB an (mit Begrenzer), `--src` ist der Ordner mit den Originalen, `--dst` der Zielordner, den `config/variants.json` erwartet. Dauer etwa 10 Minuten auf 8 Kernen.
+
+```powershell
+python -I tools/build_mod.py; python -I tools/validate_mod.py; python -I tools/install_mod.py alien
+```
+`build_mod.py` erzeugt `dist/` aus der Konfiguration. `validate_mod.py` entpackt die echte `sound_library.xml` aus dem Spiel und prüft jeden Selektor. `install_mod.py alien` entfernt alle `bosota_*`-Ordner im Spiel und kopiert XML plus Audio neu. `;` trennt die Befehle. Anderer Spielordner: `--game-dir "<Pfad>"` oder Umgebungsvariable `X4_GAME_DIR`.
+
+Im Spiel: Hauptmenü → Erweiterungen → „Boso Ta – Alien-Stimme (deutsche Audiospur)" aktiv.
+
+**Deinstallation:** `python -I tools/install_mod.py --remove` oder den Ordner `extensions\bosota_voice_alien` löschen.
+
+## Varianten
+
+| Schlüssel | Art | Beschreibung |
+|---|---|---|
+| `alien` | Audio-Umleitung | **Empfohlen.** Beschrieben oben. |
+| `de`, `en` | nur Engine-Effekte | Pitch per Resampling (Stimme wird langsamer) plus Tiefpass. Kein Audio nötig, aber für den Autor nicht ausreichend. |
+
+Eine englische Audio-Variante gibt es nicht; das Rezept ist identisch, nur mit `voice-l044/10201/normal/*` als Quelle und einem eigenen Varianteneintrag.
+
+## Eigene Abstimmung
+
+`tools/process_audio.py --list` zeigt alle Filterketten (tief, Computer, Ringmodulation, Doppelstimme, Alien, Flüstern, Unterwasser, Mitten-Fokus, Oktavstufen). Für Hörproben `--files <zeilen-id,...> --wav` verwenden; `tools/pitch_flatten.py` (Praat, eigene Umgebung unter `build/venv`) staucht vorab die Intonationsspitzen. Pegel nur im Spiel beurteilen: Eine dunkle Stimme klingt am PC gleich laut und geht im Spielmix trotzdem unter.
 
 ## Fehlersuche
 
-- Mod erscheint nicht in der Erweiterungsliste → `content.xml` ungültig (meist ein rohes `&`). Der Validator fängt das ab.
-- Mod aktiv, aber keine Wirkung → X4 mit `-logfile debuglog.txt -debug all` starten (Steam: Startoptionen) und im Log nach `No matching node` suchen. Log liegt im Egosoft-Nutzerordner unter `Dokumente\Egosoft\X4\<ID>\`.
-- Konflikte: andere Mods, die `sound_library.xml` patchen (Sound-Overhauls), können dieselben IDs berühren. Es gewinnt der zuletzt geladene Patch.
+- Mod fehlt in der Erweiterungsliste → `content.xml` ungültig; der Validator fängt das ab.
+- Mod aktiv, Boso unverändert → X4 mit `-logfile debuglog.txt` starten und mit `Select-String -Path "<Nutzerordner>\debuglog.txt" -Pattern "No matching node","bosota"` prüfen. Nutzerordner: `Dokumente\Egosoft\X4\<ID>\`.
+- Boso stumm → Audio fehlt im Spielordner (`voice\10201\normal\` muss 2 324 Dateien enthalten); `install_mod.py alien` erneut ausführen.
 
-## Werkzeuge
-
-| Datei | Zweck |
-|---|---|
-| `tools/x4cat_extract.py` | Dateien aus `.cat/.dat` holen – `.cat` ist ein Textindex, `.dat` die Rohdaten aneinandergehängt |
-| `tools/build_mod.py` | Varianten aus `config/variants.json` erzeugen |
-| `tools/validate_mod.py` | Diff gegen die Spieldatei prüfen, ohne das Spiel zu starten |
-| `tools/install_mod.py` | Eine Variante ins Spiel kopieren / entfernen |
-
-Recherche und Herleitung: `docs/X4_Boso_Ta_Voice_Mod_Handoff.md`; am Spiel verifizierte Fakten: `docs/phase0-befund.md`.
+Herleitung: `docs/X4_Boso_Ta_Voice_Mod_Handoff.md`; am Spiel verifizierte Fakten: `docs/phase0-befund.md`; Erkenntnisse: `docs/dev-team/LESSONS.md`.

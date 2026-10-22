@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<content id="bosota_warm_test" name="Boso Ta - Warmer Voice (TEST: also Betty)" description="TEST BUILD: DE parameters applied to Boso Ta AND the ship computer Betty, so the effect is audible right at game start. Replace with the de/en variant afterwards." author="Slovi" version="100" date="2026-10-22" enabled="1" save="0">
-  <text language="44" name="Boso Ta - Warmer Voice (TEST: also Betty)" description="TEST BUILD: DE parameters applied to Boso Ta AND the ship computer Betty, so the effect is audible right at game start. Replace with the de/en variant afterwards."/>
-  <text language="49" name="Boso Ta – wärmere Stimme (TEST: auch Betty)" description="TESTBUILD: DE-Parameter auf Boso Ta UND den Bordcomputer Betty, damit der Effekt sofort beim Spielstart hörbar ist. Danach durch die de/en-Variante ersetzen."/>
-</content>

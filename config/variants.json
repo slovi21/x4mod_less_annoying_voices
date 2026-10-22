@@ -1,11 +1,10 @@
 {
   "_doc": [
-    "Parameter der Mod-Varianten. Nach Änderung: python -I tools/build_mod.py  und  python -I tools/validate_mod.py",
-    "pitch:   Abspielfaktor (Resampling!). 1.0 = original, 0.891 = -2 Halbtöne, 0.841 = -3 Halbtöne. Das Tempo sinkt im gleichen Maß.",
-    "lowpass: Tiefpass-Grenzfrequenz auf der Engine-Skala 0..1 (1 = praktisch aus, kleiner = dumpfer). Spielwerte: 0.5 leicht, 0.15 stark gedämpft.",
-    "reverb:  null oder {room, roomsize, drymix, density}; room aus sound_library.xsd (z. B. 'carpeted hallway', 'padded cell').",
-    "Bei den Sound-IDs: true = Eintrag hat in der Basis bereits <effects> (Kinder werden eingefügt); false = <effects> wird neu angelegt.",
-    "Stand 2026-10-22: pitch wirkt nachweislich auf Sprache (Tutor-Test). 0.841 war fuer Slovi nicht wahrnehmbar, 0.5-0.6 deutlich. DE-Start jetzt 0.75 (-5 Halbtoene, 25 % langsamer)."
+    "Varianten der Mod. Nach Änderung: python -I tools/build_mod.py  und  python -I tools/validate_mod.py",
+    "kind=audio (empfohlen, 'alien'): ersetzt Boso Tas Audiodateien per Umleitung; Audio wird lokal mit tools/process_audio.py erzeugt (siehe audio_recipe) und liegt unter build/audio/<audio_variant>/.",
+    "kind=effects ('de', 'en'): nur Engine-Effekte in sound_library.xml. pitch = Resampling-Faktor (Tempo sinkt mit), lowpass = Engine-Skala 0..1. Für Slovi nicht ausreichend, als leichte Alternative behalten.",
+    "sound_attr_ops: Attribute an den Sound-Einträgen. noocclusion=true verhindert Dämpfung durch Geometrie (Boso hinter Glas); is3d=0 spielt Gespräche ohne Raumverarbeitung, damit die Blickrichtung keine Rolle spielt.",
+    "Bei den Sound-IDs: true = Eintrag hat in der Basis bereits <effects>; false = <effects> wird neu angelegt."
   ],
   "author": "Slovi",
   "version": "100",
@@ -16,11 +15,6 @@
     "10201_comm_signalleak": false,
     "10201_comm_npc": false,
     "10201_comm_broadcast": false
-  },
-  "betty_test_ids": {
-    "10002_normal": true,
-    "10002_comm": true,
-    "10002_comm_broadcast": true
   },
   "variants": {
     "de": {
@@ -48,22 +42,37 @@
     "alien": {
       "id": "bosota_voice_alien",
       "kind": "audio",
-      "audio_variant": "d12_alien",
+      "audio_variant": "d12_alien_mid_g9",
       "name_en": "Boso Ta - Alien Voice (German audio)",
       "name_de": "Boso Ta – Alien-Stimme (deutsche Audiospur)",
-      "desc_en": "Replaces Boso Ta's German voice lines (voice set 10201) with processed copies: one octave down with shifted formants, frequency shift and chorus. Timing and lip sync unchanged. Audio is built locally with tools/process_audio.py and is not part of the repository.",
-      "desc_de": "Ersetzt Boso Tas deutsche Sprachzeilen (Stimm-Set 10201) durch bearbeitete Kopien: eine Oktave tiefer mit mitverschobenen Formanten, Frequenzverschiebung und Chorus. Timing und Mundbewegung unverändert. Die Audiodateien werden lokal mit tools/process_audio.py erzeugt und sind nicht Teil des Repositories."
-    },
-    "test": {
-      "id": "bosota_warm_test",
-      "name_en": "Boso Ta - Warmer Voice (TEST: also Betty)",
-      "name_de": "Boso Ta – wärmere Stimme (TEST: auch Betty)",
-      "desc_en": "TEST BUILD: DE parameters applied to Boso Ta AND the ship computer Betty, so the effect is audible right at game start. Replace with the de/en variant afterwards.",
-      "desc_de": "TESTBUILD: DE-Parameter auf Boso Ta UND den Bordcomputer Betty, damit der Effekt sofort beim Spielstart hörbar ist. Danach durch die de/en-Variante ersetzen.",
-      "pitch": 0.75,
-      "lowpass": 0.2,
-      "reverb": null,
-      "include_betty": true
+      "desc_en": "Replaces Boso Ta's German voice lines (voice set 10201) with processed copies: one octave down with shifted formants, frequency shift, chorus, mid-range focus for intelligibility, +9 dB with limiter. Conversations play in 2D so head orientation does not matter. Timing and lip sync unchanged. Audio is built locally with tools/process_audio.py and is not part of the repository.",
+      "desc_de": "Ersetzt Boso Tas deutsche Sprachzeilen (Stimm-Set 10201) durch bearbeitete Kopien: eine Oktave tiefer mit mitverschobenen Formanten, Frequenzverschiebung, Chorus, Mitten-Fokus für Verständlichkeit, +9 dB mit Begrenzer. Gespräche laufen zweidimensional, die Blickrichtung spielt keine Rolle. Timing und Mundbewegung unverändert. Die Audiodateien werden lokal mit tools/process_audio.py erzeugt und sind nicht Teil des Repositories.",
+      "audio_recipe": "python -I tools/process_audio.py --variant d12_alien_mid --gain-db 9 --src <voice-l049/10201/normal> --dst build/audio/d12_alien_mid_g9",
+      "sound_attr_ops": [
+        {
+          "op": "add",
+          "attr": "noocclusion",
+          "value": "true",
+          "ids": [
+            "10201_normal",
+            "10201_normal_npc",
+            "10201_comm",
+            "10201_comm_npc",
+            "10201_comm_broadcast"
+          ],
+          "_doc": "keine Dämpfung durch Geometrie (Boso sitzt hinter Glas); 10201_comm_signalleak hat das Attribut schon"
+        },
+        {
+          "op": "replace",
+          "attr": "is3d",
+          "value": "0",
+          "ids": [
+            "10201_normal",
+            "10201_normal_npc"
+          ],
+          "_doc": "Gespräche zweidimensional: Slovi hörte von vorn 90 %, mit dem Rücken 60 % und unverständlich"
+        }
+      ]
     }
   }
 }

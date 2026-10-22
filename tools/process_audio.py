@@ -68,6 +68,66 @@ VARIANTS = {
                               "lowpass=f=2200", "aecho=0.9:0.3:25:0.25"])),
 }
 
+def alien_tank(k):
+    """Alien im Tank mit skaliertem Effektanteil k (1.0 = Vollstärke). Tonhöhe bleibt eine Oktave tiefer.
+    Skaliert: Frequenzverschiebung, Chorus-Anteil (decays) und -Tiefe (depths), Dämpfung (Tiefpass öffnet sich), Echo-Anteil."""
+    shift = round(-70 * k)
+    d1, d2 = round(0.4 * k, 3), round(0.32 * k, 3)
+    p1, p2 = round(2 * k, 2), round(1.3 * k, 2)
+    lowpass = round(2200 + (4500 - 2200) * (1 - k))
+    echo = round(0.25 * k, 3)
+    return ",".join([DEEP12, f"afreqshift=shift={shift}", f"chorus=0.6:0.9:50|60:{d1}|{d2}:0.25|0.4:{p1}|{p2}",
+                     f"lowpass=f={lowpass}", f"aecho=0.9:0.3:25:{echo}"])
+
+
+def alien_tank_tail(k):
+    """Nur der Alien-Teil (ohne die Oktave), skaliert mit k – für Ketten, die die Oktave vorher schon haben."""
+    return alien_tank(k).split(",", 1)[1]
+
+
+# Mehrband-Kompressor: Band bis 1,3 kHz unangetastet, 1,3–5 kHz wird oberhalb von -30 dB kräftig gedrückt
+# (piepsige Vokalspitzen), darüber moderat. Syntax: "attack,decay knee in/out-Punkte crossover | ..."
+HICUT = ("mcompand='0.005,0.1 6 -90/-90,0/0 1300 | 0.003,0.05 6 -90/-90,-30/-30,-20/-34,0/-36 5000"
+         " | 0.003,0.05 6 -90/-90,-30/-30,-15/-28,0/-30 22000'")
+
+# Synthesizer-Split: erst Oktave, dann Teilung bei 1,3 kHz; unten 50 % Effekt, oben 100 % Effekt, zusammenmischen
+SPLIT = ("asplit=2[lo][hi];[lo]lowpass=f=1300:p=2," + alien_tank_tail(0.5) + "[lo1];"
+         "[hi]highpass=f=1300:p=2," + alien_tank_tail(1.0) + "[hi1];[lo1][hi1]amix=inputs=2:normalize=0")
+
+def alien_tank_pitch(pitch):
+    """Alien im Tank (100 %) mit frei wählbarem Rubberband-Faktor statt der festen Oktave."""
+    return alien_tank(1.0).replace(DEEP12, rb(pitch))
+
+
+# Mitten-Fokus für Verständlichkeit: Bandbegrenzung 220 Hz–5,5 kHz, Sprachbereich angehoben, sanfte Kompression
+MID = ("highpass=f=220,lowpass=f=5500,equalizer=f=1400:t=q:w=1.0:g=4,equalizer=f=2800:t=q:w=1.2:g=2,"
+       "acompressor=threshold=-20dB:ratio=2.5:attack=8:release=150")
+
+VARIANTS.update({
+    "d12_alien_mid": ("Alien (−12 HT) + Mitten-Fokus: 220 Hz–5,5 kHz, +4 dB bei 1,4 kHz, +2 dB bei 2,8 kHz, sanfte Kompression",
+                      ",".join([DEEP12, "afreqshift=shift=-70", "chorus=0.6:0.9:50|60:0.4|0.32:0.25|0.4:2|1.3", MID])),
+})
+
+VARIANTS.update({
+    "tank_oct1.5": ("Alien im Tank, 1,5 Oktaven unter Original (-18 Halbtöne)", alien_tank_pitch(0.3536)),
+    "tank_oct1.5_presence": ("Alien im Tank -18 Halbtöne, Tiefpass auf 3,2 kHz geöffnet, +4 dB um 1,8 kHz: setzt sich im Spielmix durch",
+                             alien_tank_pitch(0.3536).replace("lowpass=f=2200", "lowpass=f=3200") + ",equalizer=f=1800:t=q:w=1.2:g=4"),
+    "tank_oct2":   ("Alien im Tank, 2 Oktaven unter Original (-24 Halbtöne)", alien_tank_pitch(0.25)),
+    "tank_oct3":   ("Alien im Tank, 3 Oktaven unter Original (-36 Halbtöne)", alien_tank_pitch(0.125)),
+    "tank_oct4":   ("Alien im Tank, 4 Oktaven unter Original (-48 Halbtöne)", alien_tank_pitch(0.0625)),
+})
+
+VARIANTS.update({
+    "alien_tank_70": ("Alien im Tank, Effekt auf 70 % (Tiefe unverändert -12 Halbtöne)", alien_tank(0.7)),
+    "alien_tank_60": ("Alien im Tank, Effekt auf 60 %", alien_tank(0.6)),
+    "alien_tank_50": ("Alien im Tank, Effekt auf 50 %", alien_tank(0.5)),
+    # Runde 5 – nur die piepsigen Höhen behandeln
+    "tank60_hicut":  ("Alien im Tank 60 % + Mehrband-Kompressor: Höhen 1,3–5 kHz nur bei Spitzen gedrückt", alien_tank(0.6) + "," + HICUT),
+    "alien_hicut":   ("Alien im Tank 100 % + Mehrband-Kompressor auf die Höhen", alien_tank(1.0) + "," + HICUT),
+    "deep12big_hicut": ("deep12big + Mehrband-Kompressor auf die Höhen", DEEP12 + "," + HICUT),
+    "alien_split":   ("Synthesizer-Split: unten 50 % Effekt, oben (ab 1,3 kHz) 100 % Effekt", DEEP12 + "," + SPLIT),
+})
+
 LOUD = "loudnorm=I=-22:TP=-3:LRA=9"   # Zielwerte: Originalzeilen messen -21.6 … -22.0 LUFS, True Peak -5 dBTP
 
 
@@ -91,9 +151,11 @@ def run(cmd):
     return subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace")
 
 
-def convert(ffmpeg, src, dst, af, wav, normalize):
+def convert(ffmpeg, src, dst, af, wav, normalize, gain_db=0.0):
     """Eine Datei bearbeiten. Mit normalize: Durchgang 1 misst die Lautheit NACH der Filterkette,
-    Durchgang 2 wendet loudnorm linear mit den Messwerten an (kein Pumpen)."""
+    Durchgang 2 wendet loudnorm linear mit den Messwerten an (kein Pumpen).
+    gain_db: zusätzliche Anhebung nach der Normalisierung, abgefangen von einem Spitzenbegrenzer bei -1 dBFS.
+    Nötig, weil tiefe, gedämpfte Stimmen bei gleicher gemessener Lautheit subjektiv deutlich leiser wirken."""
     dst.parent.mkdir(parents=True, exist_ok=True)
     chain = af
     if normalize:
@@ -104,6 +166,8 @@ def convert(ffmpeg, src, dst, af, wav, normalize):
         j = json.loads(m.group(0))
         chain = (f"{af},{LOUD}:measured_I={j['input_i']}:measured_TP={j['input_tp']}:measured_LRA={j['input_lra']}"
                  f":measured_thresh={j['input_thresh']}:offset={j['target_offset']}:linear=true")
+    if gain_db:
+        chain += f",volume={gain_db}dB,alimiter=limit=0.891:attack=5:release=60:level=false"
     codec = ["-c:a", "pcm_s16le"] if wav else ["-c:a", "libvorbis", "-q:a", "3"]
     r = run([ffmpeg, "-y", "-loglevel", "error", "-i", str(src), "-af", chain, "-ac", "1", "-ar", "44100", *codec, str(dst)])
     return src.name, r.returncode, r.stderr.strip()
@@ -121,6 +185,8 @@ def main():
     ap.add_argument("--no-normalize", action="store_true", help="keine Lautheitsnormalisierung")
     ap.add_argument("--jobs", type=int, default=max(2, (os.cpu_count() or 4) - 1))
     ap.add_argument("--ffmpeg")
+    ap.add_argument("--src-ext", default="ogg", help="Dateiendung der Quellen (ogg, oder wav aus pitch_flatten.py)")
+    ap.add_argument("--gain-db", type=float, default=0.0, help="Anhebung in dB nach der Normalisierung (mit Begrenzer bei -1 dBFS)")
     args = ap.parse_args()
 
     if args.list or not args.variant:
@@ -132,7 +198,7 @@ def main():
 
     ffmpeg = find_ffmpeg(args.ffmpeg)
     src_dir, dst_dir = Path(args.src), Path(args.dst)
-    files = sorted(src_dir.glob("*.ogg"))
+    files = sorted(src_dir.glob(f"*.{args.src_ext}"))
     if args.files:
         wanted = set(args.files.split(","))
         files = [f for f in files if f.stem in wanted]
@@ -142,11 +208,11 @@ def main():
         sys.exit(f"FEHLER: keine Dateien in {src_dir}")
     desc, af = VARIANTS[args.variant]
     ext = ".wav" if args.wav else ".ogg"
-    print(f"ffmpeg: {ffmpeg}\nVariante {args.variant}: {desc}\n{len(files)} Datei(en) -> {dst_dir}  (normalisieren: {not args.no_normalize})")
+    print(f"ffmpeg: {ffmpeg}\nVariante {args.variant}: {desc}\n{len(files)} Datei(en) -> {dst_dir}  (normalisieren: {not args.no_normalize}, Anhebung: {args.gain_db} dB)")
 
     errors = 0
     with ThreadPoolExecutor(max_workers=args.jobs) as pool:
-        futs = [pool.submit(convert, ffmpeg, f, dst_dir / (f.stem + ext), af, args.wav, not args.no_normalize) for f in files]
+        futs = [pool.submit(convert, ffmpeg, f, dst_dir / (f.stem + ext), af, args.wav, not args.no_normalize, args.gain_db) for f in files]
         for i, fut in enumerate(as_completed(futs), 1):
             name, rc, err = fut.result()
             if rc != 0:

@@ -28,9 +28,8 @@ Nothing (removed for the Workshop test). The last locally installed variant was 
 
 ## Open
 - Possible follow-up, decision pending: replace all 15 Boron voice sets (10201–10205 generic, 10251–10260 mission characters). Counted 2026-10-22: remaining 3,044 DE lines / 151,466 characters and 3,014 EN lines / 120,639 characters, ≈ 60,000 credits for both languages, half a day of tooling (multi-page support in config/build/coverage, no 2D for generic pilots) plus 2–3 hours of voice selection by Slovi. Slovi first checks in a new save how annoying the other Boron voices are.
-- Finish the TTS batch, post-process with `will_dark` + loudness + gain, fall back to Alien audio for the 5 textless ids, build variant, test in game.
 - Confirm the English level (+4 dB) in the game, then switch back to German.
-- Workshop, German item: first upload done 2026-10-22, **item id 3824406333** (hidden). Variant `alien_ws` (`ws_3824406333`, version 101) built and staged under `build/workshop/stage2/extensions/ws_3824406333/`; the `update` upload with the corrected redirect path is the next step, then set visibility. English item not yet created (same procedure with `stage1_en`).
+- "Modified" texts (2026-10-24, branch `cosmetic-extension-proposal`): after merging, replace the "come on, Egosoft!" sentence in both Workshop descriptions with the paragraph from `docs/release/FEATURE_REQUEST_POST.md` and post the forum text there. Proposal: `docs/proposals/COSMETIC_EXTENSIONS.md`, checker `tools/classify_extension.py`. Open question worth testing in the game: does the German Will variant's different line length shift dialogue timing?
 - GitHub release and ModDB upload of the packaged folders, if Slovi decides to publish.
 - Optional: separate radio-filtered set for the comm contexts; code comments in `tools/` are still German.
 
@@ -48,9 +47,10 @@ Nothing (removed for the Workshop test). The last locally installed variant was 
 - Publishing processed Egosoft audio is a grey area; the repository deliberately contains none.
 
 ## Next sensible step
-Slovi confirms the English level, switches back to German, commits. Then the first hidden Workshop upload.
+Slovi merges the proposal PR, updates the "modified" paragraph in both Workshop descriptions and sets the items public; then the forum post and the ModDB upload.
 
 ## Evidence
 - `python -I tools/validate_mod.py` → 0 errors in 4 extensions (2026-10-22)
+- `python -I -m unittest discover -s tests` → 17 tests OK; `tools/classify_extension.py` on both `dist/ws_*` → "would qualify" (2026-10-24)
 - `build/process_*.log` → every full run "0 Fehler"
 - Slovi's listening verdicts, recorded per round in `docs/dev-team/LESSONS.md`

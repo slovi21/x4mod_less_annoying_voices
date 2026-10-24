@@ -1,6 +1,6 @@
 # Proposal: a "cosmetic extension" class for X4: Foundations
 
-**Status:** suggestion from a mod author for discussion with Egosoft. This is not an Egosoft document. It describes allowlist **v1**; the normative rules are `classify()` in `tools/classify_extension.py`, and this page explains them.
+**Status:** suggestion from a mod author for discussion with Egosoft. This is not an Egosoft document. It describes allowlist **v1**. The normative rules are in `tools/classify_extension.py` (`classify()` for the classes, `normalize()` and the scan functions for the fail-closed rules); this page explains them.
 
 ## The problem
 
@@ -14,7 +14,7 @@ Single-player gameplay is out of scope: what players change in their own single-
 
 1. **Support triage.** Egosoft needs to know whether a bug report comes from a modded game.
 2. **Online integrity.** Ventures, and any future online feature or leaderboard, must not be fed by an altered simulation.
-3. **Achievements.** Community reports say they still unlock in modified games; listed for completeness.
+3. **Achievements.** Not documented by Egosoft. Community reports from 2018–2023 say they still unlock in modified games, except the two Venture-related ones; unverified for 9.00. Listed for completeness.
 
 The proposal follows from that. A file class counts as **cosmetic** if files of that class cannot change the simulation state that ends up in a save or in an online feature. A cosmetic mod can still crash the game, so it must stay **visible** to support. It just should not mark the save.
 
@@ -26,7 +26,7 @@ We do not know the engine's internals. What we saw: when the game read this mod'
 
 - **If the signature check runs per file**, that is the natural place. For every unsigned file, look up its class from path and file type (rules below). An allowlisted file adds the extension to a list of cosmetic extensions. Any other file sets "modified", exactly as today.
 - **If the check runs per extension**, apply the same rule to the extension's complete file list, meaning loose files plus catalog index entries, when it is loaded. That is what `tools/classify_extension.py` does.
-- `content.xml` is unsigned in every extension and has to be exempt as metadata.
+- `content.xml` is unsigned in every third-party extension and has to be exempt as metadata.
 
 ### 2. What is saved and shown
 
@@ -34,7 +34,7 @@ We do not know the engine's internals. What we saw: when the game read this mod'
 |---|---|---|
 | Save marked "modified" | yes, permanently (unchanged) | no |
 | Listed in save metadata and debug/crash logs | yes | yes, for support |
-| Listing persists after removal | yes | no: cosmetic content leaves nothing in the simulation state, so the next save made without it no longer lists it |
+| Listing persists after removal | yes | no: cosmetic content is not expected to leave anything in the simulation state (see open questions), so the next save made without it no longer lists it |
 | Online features (Ventures) | blocked | Egosoft's decision, see open questions |
 
 An optional small "cosmetic mods active" note in the save/load menu would keep it transparent for players.
@@ -51,13 +51,13 @@ An extension that declares `cosmetic="1"` would have only allowlisted files load
 
 ### 4. Allowlist v1 (deny by default)
 
-Paths are compared the way Windows resolves them: case-insensitive, `\` equals `/`, and trailing dots and spaces are stripped from each component. Paths with `..`, drive letters, absolute paths or characters Windows forbids are never cosmetic.
+Paths are compared the way Windows resolves them: case-insensitive, `\` equals `/`, and trailing dots and spaces are stripped from each component. Paths with `..`, drive letters, absolute paths, control characters or characters Windows forbids are never cosmetic. Neither is an extension containing linked folders (symlinks, junctions) or folders that cannot be read, because their content cannot be checked.
 
 | Class | Files | Status | Reason |
 |---|---|---|---|
 | metadata | `content.xml` in the extension root | core | describes the extension |
 | documentation | `*.txt`, `*.pdf`, `*.md` in the extension root | core | believed not to be read by the engine (assumption) |
-| audio | `*.ogg`, `*.wav` anywhere; diffs on `libraries/sound_library.xml` | core | verified for this mod in X4 9.00: sample redirect, `is3d`, `noocclusion`. Audio data has no known path back into the simulation; see the open question on speech duration |
+| audio | `*.ogg`, `*.wav` anywhere; diffs on or replacements of `libraries/sound_library.xml` | core | verified for this mod in X4 9.00: sample redirect, `is3d`, `noocclusion`. Audio data has no known path back into the simulation; see the open question on speech duration |
 | text | `t/*.xml` (directly in `t/`) | **candidate, Egosoft decides** | presentation in most cases, but scripts and the UI read text pages as data |
 | texture | `*.dds` outside `ui/` and `assets/fx/` | **candidate, Egosoft decides** | transparent or very bright textures can reveal objects; effect textures (dust, nebula) and UI icons are left out |
 | code | everything under `ui/`, `*.lua` anywhere | not cosmetic | Lua can change game state; the Protected UI Mode already treats it separately |
@@ -69,7 +69,7 @@ Further candidates only Egosoft can assess: `libraries/material_library.xml` and
 
 - **Disguised file names.** Classification uses path and type together. As far as modders know, a script has to be an `.xml` file in a script folder to be loaded as a script, and that is never allowlisted. A file named `.ogg` should only ever reach the audio decoder; Egosoft can confirm this for its loaders.
 - **Windows path tricks.** `md/x.xml.`, `MD\X.XML` and `md/x.xml ` all resolve to `md/x.xml` and are classified as such.
-- **Catalogs.** Entries in `.cat` indexes are classified like loose files. A line that does not parse, a missing `.dat`, a `.dat` whose size does not match the index, or a `.dat` without a `.cat` all make the extension non-cosmetic (fail closed).
+- **Catalogs.** Entries in `.cat` indexes are classified like loose files. An index that is not UTF-8, a line that does not parse, a missing `.dat`, a `.dat` whose size does not match the index, or a `.dat` without a `.cat` all make the extension non-cosmetic (fail closed).
 - **`sound_library.xml` used for advantage.** A diff can make distant sounds audible or remove occlusion. That is an information advantage in single-player, which is out of scope. It does not change the simulation, so online features are not affected.
 - **Speech duration.** Re-spoken lines can be longer or shorter than the originals (this mod's German variant). If scripts wait for a line to finish, dialogue timing shifts by seconds. Not verified; see open questions.
 

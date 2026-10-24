@@ -51,6 +51,6 @@ Slovi merges the proposal PR, updates the "modified" paragraph in both Workshop 
 
 ## Evidence
 - `python -I tools/validate_mod.py` → 0 errors in 4 extensions (2026-10-22)
-- `python -I -m unittest discover -s tests` → 17 tests OK; `tools/classify_extension.py` on both `dist/ws_*` → "would qualify" (2026-10-24)
+- `python -I -m unittest discover -s tests` → 22 tests OK; `tools/classify_extension.py` on both `dist/ws_*` → "would qualify" (2026-10-24)
 - `build/process_*.log` → every full run "0 Fehler"
 - Slovi's listening verdicts, recorded per round in `docs/dev-team/LESSONS.md`

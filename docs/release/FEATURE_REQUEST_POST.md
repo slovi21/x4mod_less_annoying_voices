@@ -37,11 +37,11 @@ Replaces the current sentence ending in "come on, Egosoft!".
 **English (both items):**
 
 ```
-[b]About the "modified" mark:[/b] Like every mod, this one marks your saves as "modified" – permanently, even after you remove it. That is a bit unfortunate here: the mod only patches six voice entries in libraries/sound_library.xml and adds .ogg files. No scripts, no wares, no AI, no UI – gameplay is untouched. The game currently cannot tell cosmetic mods from gameplay mods; we have written up a concrete suggestion for Egosoft: [url=https://github.com/slovi21/x4mod_less_annoying_voices/blob/main/docs/proposals/COSMETIC_EXTENSIONS.md]cosmetic extension proposal[/url]
+[b]About the "modified" mark:[/b] Like every mod, this one marks your saves as "modified" – permanently, even after you remove it. That is a bit unfortunate here: the mod only patches six voice entries in libraries/sound_library.xml and adds .ogg files. No scripts, no wares, no AI, no UI files – it only changes how one character sounds. The game currently cannot tell cosmetic mods from gameplay mods; we have written up a concrete suggestion for Egosoft: [url=https://github.com/slovi21/x4mod_less_annoying_voices/blob/main/docs/proposals/COSMETIC_EXTENSIONS.md]cosmetic extension proposal[/url]
 ```
 
 **German (optional, for the DE item):**
 
 ```
-[b]Zum Vermerk „modifiziert“:[/b] Wie jede Mod markiert auch diese deine Spielstände als „modifiziert“ – dauerhaft, auch nach dem Entfernen. Hier ist das schade: Die Mod ändert nur sechs Stimmeinträge in libraries/sound_library.xml und bringt .ogg-Dateien mit. Keine Skripte, keine Waren, keine KI, keine Oberfläche – das Gameplay bleibt unberührt. Das Spiel kann kosmetische Mods derzeit nicht von Gameplay-Mods unterscheiden; einen konkreten Vorschlag an Egosoft haben wir hier aufgeschrieben: [url=https://github.com/slovi21/x4mod_less_annoying_voices/blob/main/docs/proposals/COSMETIC_EXTENSIONS.md]Vorschlag „kosmetische Erweiterungen“[/url] (Englisch)
+[b]Zum Vermerk „modifiziert“:[/b] Wie jede Mod markiert auch diese deine Spielstände als „modifiziert“ – dauerhaft, auch nach dem Entfernen. Hier ist das schade: Die Mod ändert nur sechs Stimmeinträge in libraries/sound_library.xml und bringt .ogg-Dateien mit. Keine Skripte, keine Waren, keine KI, keine Oberflächen-Dateien – sie ändert nur, wie eine Figur klingt. Das Spiel kann kosmetische Mods derzeit nicht von Gameplay-Mods unterscheiden; einen konkreten Vorschlag an Egosoft haben wir hier aufgeschrieben: [url=https://github.com/slovi21/x4mod_less_annoying_voices/blob/main/docs/proposals/COSMETIC_EXTENSIONS.md]Vorschlag „kosmetische Erweiterungen“[/url] (Englisch)
 ```

@@ -1,24 +1,24 @@
 """Checks an X4 extension against the proposed "cosmetic extension" allowlist v1.
 
-Reference implementation for docs/proposals/COSMETIC_EXTENSIONS.md. The rules in classify() are the
-normative list; the document explains them. The verdict says whether an extension WOULD qualify under the
-proposal. It is not an Egosoft statement and changes nothing about how the game treats the extension.
+Reference implementation for docs/proposals/COSMETIC_EXTENSIONS.md. This module is normative (classify() for
+the classes, normalize() and the scan functions for the fail-closed rules); the document explains it. The
+verdict says whether an extension WOULD qualify under the proposal. It is not an Egosoft statement and changes
+nothing about how the game treats the extension.
 
-Fail-closed: anything that cannot be classified with certainty counts against the extension – unknown file
-types, catalog lines that do not parse, a .dat without its .cat, a .cat whose .dat does not match the index,
-paths with '..', drive letters or characters Windows does not allow, linked folders.
+Fail-closed: anything that cannot be classified with certainty counts against the extension - unknown file
+types, catalog lines that do not parse, a catalog that is not UTF-8, a .dat without its .cat, a .cat whose .dat
+does not match the index, paths with '..', drive letters, control characters or characters Windows does not
+allow, linked folders (symlinks, junctions), folders that cannot be read.
 
 Usage: python -I tools/classify_extension.py <extension folder> [<extension folder> ...]
 Exit code: 0 every folder qualifies, 1 at least one does not (or only with candidate classes), 2 usage error.
 """
 import os
 import re
+import stat
 import sys
 from collections import Counter
 from pathlib import Path
-
-if hasattr(sys.stdout, "reconfigure"):
-    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 AUDIO_EXT = {"ogg", "wav"}
 DOC_EXT = {"txt", "pdf", "md"}
@@ -74,7 +74,14 @@ def classify(path):
 
 
 def _is_link(path):
-    return os.path.islink(path) or getattr(os.path, "isjunction", lambda _p: False)(path)
+    if os.path.islink(path):
+        return True
+    if hasattr(os.path, "isjunction"):     # Python 3.12+
+        return os.path.isjunction(path)
+    # Before 3.12 islink() is False for junctions. Test for mount points only: OneDrive placeholders are
+    # reparse points too and must not count as links.
+    tag = getattr(os.lstat(path), "st_reparse_tag", 0)
+    return tag != 0 and tag == getattr(stat, "IO_REPARSE_TAG_MOUNT_POINT", None)
 
 
 def scan_catalog(cat, label, siblings):
@@ -108,7 +115,11 @@ def scan_extension(ext_dir):
     if not ext_dir.is_dir() or "content.xml" not in {f.lower() for f in os.listdir(ext_dir)}:
         raise UsageError(f"{ext_dir}: no content.xml - not an extension folder")
     items = []
-    for dirpath, dirnames, filenames in os.walk(ext_dir):
+
+    def unreadable(err):                   # os.walk skips such folders silently unless told otherwise
+        items.append((f"{err.filename} (cannot be read: {err.strerror})", "invalid"))
+
+    for dirpath, dirnames, filenames in os.walk(ext_dir, onerror=unreadable):
         here = Path(dirpath)
         for d in list(dirnames):
             if _is_link(here / d):
@@ -141,6 +152,9 @@ def verdict(items):
 
 
 def main(argv):
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, "reconfigure"):
+            stream.reconfigure(encoding="utf-8", errors="replace")
     if not argv:
         print(__doc__)
         return 2
@@ -149,7 +163,7 @@ def main(argv):
         try:
             items = scan_extension(arg)
         except (UsageError, OSError) as e:
-            print(f"ERROR: {e}")
+            print(f"ERROR: {e}", file=sys.stderr)
             return 2
         result, text = verdict(items)
         print(f"\n=== {arg} ===")

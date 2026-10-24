@@ -29,13 +29,13 @@ The processed sound files are copies of Egosoft's recordings. That is why they a
 
 ## What "modified" means
 
-Egosoft seals its own game files with a kind of signature. As soon as the game loads a file without that seal, and the mod's note is such a file, it switches to "modified" mode. Three things follow.
+Egosoft seals its own game files with a kind of signature. As soon as the game loads a file without that seal, and the mod's note is such a file, it switches to "modified" mode. This is what is known about the consequences.
 
-- Steam achievements are no longer awarded in that playthrough.
-- The online Ventures feature is switched off.
 - Any save you make while modified stays marked as modified, even if you remove the mod later.
+- The online Ventures feature is not available in modified saves.
+- Steam achievements: Egosoft does not say. Players report that achievements still unlock in modified games, except the two tied to Ventures, which may not be obtainable at all any more. We have not checked this ourselves.
 
-This is true for every mod, including everything from the Steam Workshop. No mod can carry Egosoft's seal. If achievements matter to you, play without mods.
+This is true for every mod, including everything from the Steam Workshop. No mod can carry Egosoft's seal, and the game cannot tell a voice mod from a cheat. If an unmarked save matters to you, keep one that never had mods. How the game could tell cosmetic mods apart is described in `docs/proposals/COSMETIC_EXTENSIONS.md`.
 
 ## Removing the mod
 
@@ -49,5 +49,5 @@ Delete the mod's folder from the game's `extensions` folder. The game no longer 
 | Are original files touched? | No. |
 | Other characters? | Only the Boron representative, who shares the voice actor. |
 | What do I need? | To build it yourself: Python and ffmpeg. As a packaged download: nothing. |
-| Does the game count as modified? | Yes, like with any mod. No achievements, no Ventures. |
+| Does the game count as modified? | Yes, like with any mod, and saves keep the mark. No Ventures; achievements reportedly still unlock. |
 | Undo? | Delete the folder. |

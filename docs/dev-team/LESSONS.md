@@ -16,6 +16,7 @@ Durable, non-obvious findings with evidence. One-offs and generalities do not be
 - **Large Bash heredocs failed in the tool shell** with "unexpected EOF while looking for matching quote". Create big files with the Write tool.
 - **ffmpeg from winget is not on the tool shell's PATH.** It lives under `%LOCALAPPDATA%\Microsoft\WinGet\Packages\Gyan.FFmpeg_*\ffmpeg-9.0.2-full_build\bin\`; `process_audio.py` finds it there, or pass `--ffmpeg`.
 - **`acompressor` rejects `makeup=0`**; the valid range is 1–64 (a multiplier). Leave it out.
+- **`x4cat_extract.parse_cat` skips malformed index lines silently** and reads with `errors="replace"` (`tools/x4cat_extract.py`, `parse_cat`). Fine for extraction, wrong for any check whose verdict must not miss a file: `tools/classify_extension.py` therefore has its own strict, fail-closed parser.
 - **`tasklist` prints in the OEM code page.** Decode its output as bytes and search for ASCII, or Python's default cp1252 decoder throws.
 
 ## Audio

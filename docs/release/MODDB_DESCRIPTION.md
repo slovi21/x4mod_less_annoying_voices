@@ -22,7 +22,7 @@ Both versions also fix a playback problem: Boso Ta's conversations no longer get
 
 ## Please read
 
-- Like every mod, this one marks the game as **modified**: no Steam achievements and no online Ventures in saves made while it is active, and the mark stays on those saves even after you remove the mod.
+- Like every mod, this one marks the game as **modified**: no online Ventures in saves made while it is active, and the mark stays on those saves even after you remove the mod. Reports on Steam achievements in modified games vary; check before you rely on them.
 - The Boron faction representative is voiced by the same actor and shares Boso Ta's voice set, so he gets the new voice too. No random NPCs are affected.
 - No game files are changed; the mod only tells the game where to find Boso Ta's lines.
 - Compatible with X4: Foundations 9.00. Mods that patch `libraries/sound_library.xml` for the same entries (sound overhauls) may conflict; the one loaded last wins.
@@ -33,4 +33,4 @@ Built with ffmpeg, Rubberband and ElevenLabs (German voice "Will"). Source code,
 
 ---
 
-*Deutsch:* Die DE-Datei ist für die deutsche Sprachausgabe, die EN-Datei für die englische. ZIP nach `<X4>\extensions\` entpacken, Ordnernamen nicht ändern, im Spiel unter Erweiterungen aktivieren. Das Spiel gilt danach als modifiziert (keine Steam-Erfolge, keine Ventures). Deinstallation: Ordner löschen.
+*Deutsch:* Die DE-Datei ist für die deutsche Sprachausgabe, die EN-Datei für die englische. ZIP nach `<X4>\extensions\` entpacken, Ordnernamen nicht ändern, im Spiel unter Erweiterungen aktivieren. Das Spiel gilt danach als modifiziert, auch nach dem Entfernen (keine Ventures; ob Steam-Erfolge betroffen sind, wird unterschiedlich berichtet). Deinstallation: Ordner löschen.

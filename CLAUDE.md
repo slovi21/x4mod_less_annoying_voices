@@ -64,4 +64,4 @@ Slovi decides by ear, not by numbers, and has poor hearing. WAV samples via Send
 - `<effects>` offers `doppler`, `fade`, `filter`, `reverb`, `pitch(start,end,steps)`; no equalizer; pitch is resampling.
 - Conversations need `is3d="0"` and `noocclusion="true"` for a dark processed voice to stay intelligible.
 - User folder `C:\Users\slovi\OneDrive\Documents\Egosoft\X4\34818113\`, enable table `content-MSI-PRODP20Z.xml`. Any unsigned extension marks the game as modified; `save="0"` does not change that.
-- Effect of "modified" on achievements is not documented by Egosoft; community reports (2018–2023) say they still unlock except the Venture ones. Never state "no achievements" as fact in public texts.
+- Steam achievements keep working in modified games: consistent player reports 2018 – early 2026, not documented by Egosoft. The two Venture achievements are reportedly out of reach for everyone (Ventures switched off). Never write "no achievements" in public texts; it was corrected by players on Reddit (2026-10).

@@ -14,7 +14,7 @@ Single-player gameplay is out of scope: what players change in their own single-
 
 1. **Support triage.** Egosoft needs to know whether a bug report comes from a modded game.
 2. **Online integrity.** Ventures, and any future online feature or leaderboard, must not be fed by an altered simulation.
-3. **Achievements.** Not documented by Egosoft. Community reports from 2018–2023 say they still unlock in modified games, except the two Venture-related ones; unverified for 9.00. Listed for completeness.
+3. **Achievements.** Not documented by Egosoft. Player reports from 2018 up to early 2026 consistently say they still unlock in modified games. The two Venture achievements are reportedly out of reach for everyone, because Ventures has been switched off. So achievements are not a reason for the mark today; listed for completeness.
 
 The proposal follows from that. A file class counts as **cosmetic** if files of that class cannot change the simulation state that ends up in a save or in an online feature. A cosmetic mod can still crash the game, so it must stay **visible** to support. It just should not mark the save.
 
@@ -118,7 +118,7 @@ python -I tools/classify_extension.py <extension folder> [<extension folder> ...
 ## Sources
 
 - Developer statement, 2019, as quoted in a community Q&A compilation: [overclockers.co.uk](https://forums.overclockers.co.uk/threads/x4-foundations.18791409/page-23)
-- Achievements in modified games, community reports 2018–2023: [Steam 1](https://steamcommunity.com/app/392160/discussions/0/1744479698795164051/), [Steam 2](https://steamcommunity.com/app/392160/discussions/0/1743353164090539301/), [Steam 3](https://steamcommunity.com/app/392160/discussions/0/3164335241614123876/)
+- Achievements in modified games, community reports 2018 – early 2026: [Steam, "Latest on modified games and Steam achievements"](https://steamcommunity.com/app/392160/discussions/0/733658130650701172/), [Steam, "What features are disabled on a Modified tagged save game?"](https://steamcommunity.com/app/392160/discussions/0/4407417073565292892/), [Steam 1](https://steamcommunity.com/app/392160/discussions/0/1744479698795164051/), [Steam 2](https://steamcommunity.com/app/392160/discussions/0/1743353164090539301/), [Steam 3](https://steamcommunity.com/app/392160/discussions/0/3164335241614123876/)
 - Mark stays after removing mods, community report: [Steam](https://steamcommunity.com/app/392160/discussions/0/3276939184050387907)
 - Protected UI Mode, community reports: [Steam](https://steamcommunity.com/app/392160/discussions/0/4626981956824860847)
 - Engine behaviour of this mod: `docs/phase0-findings.md`

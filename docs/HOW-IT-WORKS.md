@@ -33,7 +33,7 @@ Egosoft seals its own game files with a kind of signature. As soon as the game l
 
 - Any save you make while modified stays marked as modified, even if you remove the mod later.
 - The online Ventures feature is not available in modified saves.
-- Steam achievements: Egosoft does not say. Players report that achievements still unlock in modified games, except the two tied to Ventures, which may not be obtainable at all any more. We have not checked this ourselves, and nobody has confirmed it for version 9.00.
+- Steam achievements keep working. Egosoft does not say so officially, but players have reported it consistently for years, most recently in early 2026. The only exceptions are the two achievements tied to Ventures, and those can reportedly not be earned by anyone any more, with or without mods.
 
 This is true for every mod, including everything from the Steam Workshop. No mod can carry Egosoft's seal, and the game cannot tell a voice mod from a cheat. If an unmarked save matters to you, keep one that never had mods. How the game could tell cosmetic mods apart is described in `docs/proposals/COSMETIC_EXTENSIONS.md`.
 
@@ -49,5 +49,5 @@ Delete the mod's folder from the game's `extensions` folder. The game no longer 
 | Are original files touched? | No. |
 | Other characters? | Only the Boron representative, who shares the voice actor. |
 | What do I need? | To build it yourself: Python and ffmpeg. As a packaged download: nothing. |
-| Does the game count as modified? | Yes, like with any mod, and saves keep the mark. No Ventures; achievements reportedly still unlock except the two Venture ones (unverified for 9.00). |
+| Does the game count as modified? | Yes, like with any mod, and saves keep the mark. No Ventures. Steam achievements keep working (player reports up to 2026). |
 | Undo? | Delete the folder. |

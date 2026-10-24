@@ -7,3 +7,7 @@ diag/**/voice*/
 # API-Schluessel liegen nie im Repo
 *.key
 .elevenlabs_key
+release/assets/
+release/out/*
+!release/out/text/
+!release/out/status.json

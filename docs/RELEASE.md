@@ -62,3 +62,7 @@ Then zip each `extensions\<folder>` with the folder as the archive root (PowerSh
 - The description says which voice track the item is for, that the game counts as modified, and how to uninstall.
 - The ElevenLabs licence: the German audio was generated on a paid plan (commercial licence, no attribution required). Keep the invoice.
 - Egosoft audio: the English variant contains processed Egosoft recordings. Publishing is a grey area; the DE Will variant contains none.
+
+## modpub
+
+Videos, thumbnails, release texts and the uploads to YouTube, Steam Workshop, Reddit and ModDB are automated by the `modpub` tool in `C:\#repos\github\modpub` (setup: `docs\SETUP.md` there). This repository only holds the manifest `release/mod.yaml`; `release/assets/` and `release/out/` (except `release/out/text/` and `release/out/status.json`) are not committed. The flow is six commands, run from the repository root (the default `--release-dir` is `release`): `modpub check` (validate the manifest and its files), `modpub render` (images and videos), `modpub write` (text skeletons in `release/out/text/`, to be filled in), `modpub preview` (one HTML page with everything), `modpub publish <channel>` for `youtube`, then `workshop`, then `reddit`, and `moddb` after `write`, and `modpub status`; put `--dry-run` before `publish` to see what would be sent. Build the mod folders under `build/workshop/stage2*` first; the Workshop channel copies them and bumps `content.xml` version, name and description.

@@ -59,7 +59,7 @@ Then zip each `extensions\<folder>` with the folder as the archive root (PowerSh
 
 - `python -I tools/validate_mod.py` → 0 errors.
 - `python -I tools/check_coverage.py` for both languages → 0 missing.
-- The description says which voice track the item is for, that the game counts as modified, and how to uninstall.
+- The description says which voice track the item is for, that the game counts as modified (achievements keep working, Ventures do not; never write "no achievements"), and how to uninstall.
 - The ElevenLabs licence: the German audio was generated on a paid plan (commercial licence, no attribution required). Keep the invoice.
 - Egosoft audio: the English variant contains processed Egosoft recordings. Publishing is a grey area; the DE Will variant contains none.
 

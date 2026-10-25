@@ -4,7 +4,7 @@ A mod for **X4: Foundations 9.00** that makes the Boron scientist **Boso Ta** be
 
 Two things are worth knowing before you install anything:
 
-- **The game will count as modified.** Every mod that is not signed by Egosoft does this. You lose Steam achievements and online Ventures for any save you make while the mod is active, and the save keeps that mark even if you remove the mod later. The `save="0"` attribute in the mod's `content.xml` only means the save file does not list the mod as a requirement, so you can uninstall without warnings.
+- **The game will count as modified.** Every mod that is not signed by Egosoft does this. Saves you make while the mod is active are marked as modified and keep that mark even if you remove the mod later; online Ventures are not available in them. **Steam achievements are not affected:** player reports from 2018 up to early 2026 consistently say mods do not block them (Egosoft does not document it). The only exceptions are the two Venture achievements, and Ventures has reportedly been switched off for everyone, so nobody can earn those. Why a voice mod gets the same mark as a cheat, and how the game could tell them apart: `docs/proposals/COSMETIC_EXTENSIONS.md`. The `save="0"` attribute in the mod's `content.xml` only means the save file does not list the mod as a requirement, so you can uninstall without warnings.
 - **The repository contains no game audio.** The processed files are copies of Egosoft's recordings and are not published here. You generate them on your own machine from your own installation (about ten minutes), or you receive them as part of a packaged release.
 
 Boso Ta speaks through voice set `10201`. The only other character wired to that set is the Boron faction representative, voiced by the same actor, so he changes too. Random NPCs are not affected.
@@ -100,9 +100,11 @@ tools/check_coverage.py    after a game patch: lists Boso Ta lines missing from 
 tools/build_mod.py         writes dist/<id>/ from the configuration
 tools/validate_mod.py      checks the diff against the game's real sound_library.xml
 tools/install_mod.py       installs exactly one variant, audio included
+tools/classify_extension.py  checks an extension against the proposed cosmetic allowlist (docs/proposals/)
+tests/                     unit tests (python -I -m unittest discover -s tests)
 dist/                      built extensions without audio (committed)
 docs/                      project documentation (see below)
 build/                     extracted game files, processed audio, samples, venv, Workshop staging (ignored)
 ```
 
-Documentation: `docs/HOW-IT-WORKS.md` (plain language), `docs/phase0-findings.md` (verified engine facts), `docs/RELEASE.md` (Workshop and ModDB procedure), `docs/MAINTENANCE.md` (what a game patch can break and how to check), `docs/HISTORY.md` (development and patch history, including everything that was tried and removed), `docs/projekt/MILESTONES.md` and `docs/projekt/CURRENT_STATE.md` (project state), `docs/dev-team/LESSONS.md` (what we learned the hard way).
+Documentation: `docs/HOW-IT-WORKS.md` (plain language), `docs/phase0-findings.md` (verified engine facts), `docs/RELEASE.md` (Workshop and ModDB procedure), `docs/MAINTENANCE.md` (what a game patch can break and how to check), `docs/HISTORY.md` (development and patch history, including everything that was tried and removed), `docs/proposals/COSMETIC_EXTENSIONS.md` (suggestion to Egosoft: a cosmetic extension class that does not mark saves) with ready-to-paste texts in `docs/release/FEATURE_REQUEST_POST.md`, `docs/projekt/MILESTONES.md` and `docs/projekt/CURRENT_STATE.md` (project state), `docs/dev-team/LESSONS.md` (what we learned the hard way).

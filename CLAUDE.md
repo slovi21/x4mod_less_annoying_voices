@@ -17,6 +17,8 @@ tools/process_audio.py     ffmpeg/Rubberband filter chains, two-pass loudness, -
 tools/voice_convert_elevenlabs.py  ElevenLabs TTS: quota, voices, tts, tts-batch (resumable); key in %USERPROFILE%\.elevenlabs_key
 tools/check_coverage.py    after a game patch: missing or changed Boso Ta lines per variant folder
 tools/x4cat_extract.py     .cat/.dat extractor (text index + concatenated data, no XRCatTool needed)
+tools/classify_extension.py  checks an extension against the proposed cosmetic allowlist v1 (fail-closed); normative for docs/proposals/COSMETIC_EXTENSIONS.md
+tests/                     unit tests: python -I -m unittest discover -s tests
 dist/                      built extensions without audio (committed)
 build/                     extracted game files, TTS output, processed audio, samples, venv, Workshop staging – ignored
 docs/projekt/              MILESTONES.md, CURRENT_STATE.md
@@ -62,3 +64,4 @@ Slovi decides by ear, not by numbers, and has poor hearing. WAV samples via Send
 - `<effects>` offers `doppler`, `fade`, `filter`, `reverb`, `pitch(start,end,steps)`; no equalizer; pitch is resampling.
 - Conversations need `is3d="0"` and `noocclusion="true"` for a dark processed voice to stay intelligible.
 - User folder `C:\Users\slovi\OneDrive\Documents\Egosoft\X4\34818113\`, enable table `content-MSI-PRODP20Z.xml`. Any unsigned extension marks the game as modified; `save="0"` does not change that.
+- Steam achievements keep working in modified games: consistent player reports 2018 – early 2026, not documented by Egosoft. The two Venture achievements are reportedly out of reach for everyone (Ventures switched off). Never write "no achievements" in public texts; it was corrected by players on Reddit (2026-10).

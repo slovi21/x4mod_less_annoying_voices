@@ -9,7 +9,7 @@ Nothing (removed for the Workshop test). The last locally installed variant was 
 - **Steam Workshop DE:** item **3824406333**, folder `ws_3824406333`, Will voice, version 102. **Subscription test passed** (Slovi, 2026-10-22: "alles ok"). Visibility still hidden; Slovi sets it public on the item page.
 - **Steam Workshop EN:** item **3824446410**, folder `ws_3824446410`, Alien EN (+4 dB), version 101, created XML-only then updated with audio. Two earlier creation attempts timed out (Steam error 16); check "Your Workshop files" for stray empty items and delete them if any exist.
 - **ModDB package:** `build/moddb_package/` – both ZIPs (DE 94 MB, EN 59 MB), `logo_800x800.jpg`, three screenshots (two previews, Slovi's own in-game shot), description as .md and .txt, `README_UPLOAD.txt` with the form fields. Not uploaded yet; needs Slovi's ModDB account. No images from third-party sites were used.
-- Local game folder: all `bosota_*` extensions removed so the Workshop subscription can be tested cleanly. Subscribing installs the item under `Documents\Egosoft\X4\34818113\extensions\ws_3824406333`. Remove `-voicelanguage 44` from the launch options first.
+- Local game folder: all `bosota_*` extensions removed so the Workshop subscription can be tested cleanly. Subscribing installs the item into the game folder as `extensions\ws_3824406333\` (`content.xml`, `ext_01.cat`, `ext_01.dat`; checked 2026-10-26). Remove `-voicelanguage 44` from the launch options first.
 - Staging copies: `build/workshop/stage2` (DE), `build/workshop/stage2_en` and `%LOCALAPPDATA%\x4mod_workshop` (EN); previews `build/workshop/preview_DE.jpg`, `preview_EN.jpg`; procedure `docs/RELEASE.md`; patch procedure `docs/MAINTENANCE.md`; coverage indexes under `build/index/`.
 
 ## Done
@@ -28,10 +28,10 @@ Nothing (removed for the Workshop test). The last locally installed variant was 
 
 ## Open
 - Possible follow-up, decision pending: replace all 15 Boron voice sets (10201–10205 generic, 10251–10260 mission characters). Counted 2026-10-22: remaining 3,044 DE lines / 151,466 characters and 3,014 EN lines / 120,639 characters, ≈ 60,000 credits for both languages, half a day of tooling (multi-page support in config/build/coverage, no 2D for generic pilots) plus 2–3 hours of voice selection by Slovi. Slovi first checks in a new save how annoying the other Boron voices are.
-- Finish the TTS batch, post-process with `will_dark` + loudness + gain, fall back to Alien audio for the 5 textless ids, build variant, test in game.
-- Confirm the English level (+4 dB) in the game, then switch back to German.
-- Workshop, German item: first upload done 2026-10-22, **item id 3824406333** (hidden). Variant `alien_ws` (`ws_3824406333`, version 101) built and staged under `build/workshop/stage2/extensions/ws_3824406333/`; the `update` upload with the corrected redirect path is the next step, then set visibility. English item not yet created (same procedure with `stage1_en`).
-- GitHub release and ModDB upload of the packaged folders, if Slovi decides to publish.
+- Workshop versions: modpub's upload of 2026-10-24 left DE at 103 and EN at 102 (`release/out/workshop/<lang>/content.xml`), while `config/variants.json` still says 102 and 101. The next manual upload needs DE ≥ 104, EN ≥ 103.
+- User texts still claim that mods cost Steam achievements (`docs/HOW-IT-WORKS.md`, `docs/release/MODDB_DESCRIPTION.md`, `release/out/text/*`, the Workshop descriptions). Player reports say achievements still unlock; only Ventures are blocked. README corrected 2026-10-25; the others wait for Slovi's decision.
+- Known installer limits, documented in `book/13-failure-modes.md`: `ws_*` folders are neither removed nor overwritten (`FileExistsError`), and the old `bosota_*` folder is removed before the audio check.
+- Set Workshop visibility; ModDB upload of the packaged folders, if Slovi decides to publish.
 - Optional: separate radio-filtered set for the comm contexts; code comments in `tools/` are still German.
 
 ## Decisions
@@ -47,8 +47,11 @@ Nothing (removed for the Workshop test). The last locally installed variant was 
 - Levels are limiter-bound (peaks at −0.3 to −1.5 dBTP); further gain would be audible.
 - Publishing processed Egosoft audio is a grey area; the repository deliberately contains none.
 
+## Codebase book (2026-10-25)
+`book/` holds a reference book of the repository (16 chapters, quizzes, final exam). Chapters 00, 04, 05, 08 and 13 went through a three-stage review (`*.review.md` next to them). Writing it found and fixed: the installer copied no audio since clean-up `e5a7438` (now always copies and checks first), control characters in `config/variants.json`, stale help text in `tools/voice_convert_elevenlabs.py`, wrong catalog (`01.cat` instead of `03.cat`) and a wrong `-I` description in README and `init.sh`. After the move out of OneDrive, `build/venv` still works (checked 2026-10-26: `python.exe`, `requests`, `python -m pip`); only launchers such as `pip.exe` may still carry the old path, so call `build\venv\Scripts\python.exe -m pip`.
+
 ## Next sensible step
-Slovi confirms the English level, switches back to German, commits. Then the first hidden Workshop upload.
+Slovi decides on the remaining user texts (achievements), sets the Workshop items public and uploads to ModDB.
 
 ## Evidence
 - `python -I tools/validate_mod.py` → 0 errors in 4 extensions (2026-10-22)

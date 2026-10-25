@@ -9,10 +9,11 @@ one line). The key is never printed.
 Usage (run inside build/venv, which has requests, numpy and soundfile):
   build\\venv\\Scripts\\python.exe -I tools\\voice_convert_elevenlabs.py quota
   build\\venv\\Scripts\\python.exe -I tools\\voice_convert_elevenlabs.py voices [--filter male]
-  build\\venv\\Scripts\\python.exe -I tools\\voice_convert_elevenlabs.py convert --voice <voice_id> --src <folder with .ogg> --dst <folder>
-         [--files 30201131,30201057] [--limit N] [--stability 0.5] [--similarity 0.8] [--style 0.0] [--jobs 2]
-         [--model eleven_multilingual_sts_v2] [--output-format mp3_44100_128]
-Existing output files are skipped, so an interrupted run can simply be restarted.
+  build\\venv\\Scripts\\python.exe -I tools\\voice_convert_elevenlabs.py tts --voice <voice_id> --text "<text>" --out <file.wav> [--model eleven_v4_turbo]
+  build\\venv\\Scripts\\python.exe -I tools\\voice_convert_elevenlabs.py tts-batch --voice <voice_id> --tfile build/base/t/0001-l049.xml
+         --ids-from <folder with the original .ogg> --dst build/tts/<name> [--model eleven_v4_turbo] [--page 10201]
+         [--files id1,id2] [--limit N] [--dry-run] [--stability 0.5] [--similarity 0.75] [--style 0.0] [--jobs 2]
+tts-batch skips WAVs that already exist, so an interrupted run can simply be restarted.
 """
 import argparse
 import json

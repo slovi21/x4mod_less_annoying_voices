@@ -36,7 +36,7 @@ Raise `version` of `alien_en_ws` in `config/variants.json` before each update, o
 
 **Creating a further item (for example another language or speaker):** publish with XML-only content first, read the `ws_` id the tool writes into `content.xml`, add a variant with that id, then `update` with the audio.
 
-**Testing a Workshop item:** subscribe, remove the local copy from `<game>\extensions` (`install_mod.py --remove`, game closed), start the game; Steam installs the item under `Documents\Egosoft\X4\<id>\extensions\ws_<number>`.
+**Testing a Workshop item:** subscribe, remove the local copy from `<game>\extensions` (`install_mod.py --remove`, game closed), start the game; Steam installs the item into the game's own folder, `<game>\extensions\ws_<number>\`, as `content.xml` plus `ext_01.cat`/`ext_01.dat` (checked on disk 2026-10-26; the user folder `Documents\Egosoft\X4\<id>\` has no `extensions` folder).
 
 ## ModDB
 

@@ -4,7 +4,10 @@ Vorher werden dort alle Ordner entfernt, deren Name mit 'bosota_' beginnt – es
 Variante aktiv sein (alle patchen dieselben Sound-IDs). Andere Mods werden nicht angefasst.
 Verweigert den Austausch, solange X4 läuft (das laufende Spiel würde sonst gelöschte Dateien suchen).
 
-Aufruf: python -I tools/install_mod.py alien|alien_en|de|en [--game-dir "<X4-Ordner>"]
+Kopiert die XML-Dateien aus dist/<id>/ und die Audiodateien aus build/audio/<audio_variant>/ nach
+extensions/<id>/voice/10201/normal/.
+
+Aufruf: python -I tools/install_mod.py will|alien|alien_en|alien_ws|alien_en_ws [--game-dir "<X4-Ordner>"] [--force]
         python -I tools/install_mod.py --remove          (alle bosota_* entfernen)
 Spielordner: --game-dir, sonst Umgebungsvariable X4_GAME_DIR, sonst C:\\Steam\\steamapps\\common\\X4 Foundations
 """
@@ -99,18 +102,18 @@ def main():
     if not src.is_dir():
         sys.exit(f"FEHLER: {src} fehlt – zuerst: python -I tools/build_mod.py")
     dst = ext_root / mod_id
+    # Every variant redirects to its own audio folder, so the audio must always be copied. Checked before anything
+    # is written: a variant installed without audio would make Boso silent in the game.
+    audio = ROOT / "build" / "audio" / v["audio_variant"]
+    files = sorted(audio.glob("*.ogg")) if audio.is_dir() else []
+    if not files:
+        sys.exit(f"FEHLER: keine Audiodateien in {audio} – zuerst das Rezept aus config/variants.json (audio_recipe) ausführen")
     shutil.copytree(src, dst)
-    if v.get("kind") == "audio":
-        # Audiodateien liegen nicht in dist/ (nicht im Repo), sondern in build/audio/<variante>/
-        audio = ROOT / "build" / "audio" / v["audio_variant"]
-        files = sorted(audio.glob("*.ogg")) if audio.is_dir() else []
-        if not files:
-            sys.exit(f"FEHLER: keine Audiodateien in {audio} – zuerst tools/process_audio.py --variant {v['audio_variant']} ausführen")
-        voice_dir = dst / "voice" / "10201" / "normal"
-        voice_dir.mkdir(parents=True)
-        for f in files:
-            shutil.copyfile(f, voice_dir / f.name)
-        print(f"Audio:       {len(files)} Dateien nach {voice_dir}")
+    voice_dir = dst / "voice" / "10201" / "normal"
+    voice_dir.mkdir(parents=True)
+    for f in files:
+        shutil.copyfile(f, voice_dir / f.name)
+    print(f"Audio:       {len(files)} Dateien nach {voice_dir}")
     clear_readonly_tree(dst)  # sonst erbt das Ziel den OneDrive-Schreibschutz der Quelle
     print(f"installiert: {dst}")
     print("Im Spiel: Hauptmenü > Erweiterungen > Eintrag muss sichtbar und aktiv sein.")

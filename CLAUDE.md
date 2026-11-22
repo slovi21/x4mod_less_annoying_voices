@@ -1,6 +1,6 @@
 # x4mod_less_annoying_voices
 
-**Project mode: P1** (several sessions, several milestones). Managed with the skills `anthropic-skills:projektsteuerung` and `anthropic-skills:dev-team-steuerung`. Session start: read `docs/projekt/MILESTONES.md`, `docs/projekt/CURRENT_STATE.md` and `git log`, run `./init.sh`, then report the state in five lines before taking a task.
+**Project mode: P1** (several sessions, several milestones). Managed with the developer plugin `slovis-dev-team` when it is loaded. Session start: read `docs/projekt/MILESTONES.md`, `docs/projekt/CURRENT_STATE.md` and `git log`, run `./init.sh`, then report the state in five lines before taking a task.
 
 ## What this is
 

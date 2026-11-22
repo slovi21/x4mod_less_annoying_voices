@@ -1,0 +1,55 @@
+id: bosota_voice
+game: x4
+title:
+  de: "Boso Ta – erträgliche Stimme"
+  en: "Boso Ta – less annoying VOICE"
+languages: [de, en]
+version: "1.0"
+kind: audio
+headline:
+  de: "ENDLICH ERTRÄGLICH"
+  en: "FINALLY BEARABLE"
+video:
+  mode: audio_compare
+  background: assets/bg_{lang}.jpg
+  title_card_seconds: 3
+  gap_seconds: 0.9
+  lines:
+    - id: 30201131
+      before: assets/before/{lang}/30201131.ogg
+      after: assets/after/{lang}/30201131.ogg
+      subtitle:
+        de: "Tatsächlich sind mehrere Schiffe involviert, um eventuelle Verfolger in die Irre zu führen."
+        en: "There are actually multiple ships involved as to confound anyone wishing to track me."
+    - id: 30201057
+      before: assets/before/{lang}/30201057.ogg
+      after: assets/after/{lang}/30201057.ogg
+      subtitle:
+        de: "Ich dränge mich nur ungern auf, aber ich habe eine Idee, wie wir fortfahren sollten."
+        en: "I hate to be a bother, but I have an idea on how to proceed."
+  combined: true
+images:
+  workshop_shot: assets/preview_shot.jpg
+  logo_source: assets/preview_shot.jpg
+channels:
+  youtube:
+    privacy: unlisted
+    playlist: null
+    tags: [X4 Foundations, mod, Boso Ta]
+  workshop:
+    items: {de: 3824406333, en: 3824446410}
+    staging:
+      de: ../build/workshop/stage2/extensions/ws_{item}
+      en: ../build/workshop/stage2_en/extensions/ws_{item}
+    tags: [Sound, Voice]
+    changenote: "Release {version}"
+  reddit:
+    subreddit: X4Foundations
+    flair: null
+  moddb:
+    package: true
+    zips:
+      de: ../build/moddb_package/Boso_Ta_less_annoying_VOICE_DE_v{version}.zip
+      en: ../build/moddb_package/Boso_Ta_less_annoying_VOICE_EN_v{version}.zip
+links:
+  github: https://github.com/slovi21/x4mod_less_annoying_voices

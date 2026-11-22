@@ -1,0 +1,48 @@
+{
+  "render": {
+    "de": {
+      "files": [
+        "out/thumb_de.jpg",
+        "out/preview_de.jpg",
+        "out/logo_800x800.jpg",
+        "out/video_de.mp4"
+      ],
+      "done": "2026-10-24T10:36:44+00:00"
+    },
+    "en": {
+      "files": [
+        "out/thumb_en.jpg",
+        "out/preview_en.jpg",
+        "out/logo_800x800.jpg",
+        "out/video_en.mp4"
+      ],
+      "done": "2026-10-24T10:36:47+00:00"
+    },
+    "all": {
+      "file": "out/video_all.mp4"
+    }
+  },
+  "youtube": {
+    "en": {
+      "video_id": "v4PVMONMwl0",
+      "done": "2026-10-24T10:37:59+00:00"
+    },
+    "de": {
+      "video_id": "YyyKmJ3aTdc",
+      "done": "2026-10-24T10:37:59+00:00"
+    }
+  },
+  "write": {
+    "_": {
+      "done": "2026-10-24T10:36:56+00:00"
+    }
+  },
+  "workshop": {
+    "de": {
+      "done": "2026-10-24T10:38:03+00:00"
+    },
+    "en": {
+      "done": "2026-10-24T10:38:03+00:00"
+    }
+  }
+}

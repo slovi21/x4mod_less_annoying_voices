@@ -1,0 +1,59 @@
+# Current state
+
+**Milestone:** 5 in progress (packaging and distribution). Milestones 1, 2, 3, 4 and 6 reached on 2026-10-22.
+
+## Installed in the game right now
+Nothing (removed for the Workshop test). The last locally installed variant was `bosota_voice_will_de` – the new German voice (ElevenLabs "Will", Eleven v4 Turbo, `will_dark` + 6 dB, folder `build/audio/will_dark_g6`, −16.0 LUFS, 2,324 files incl. 5 Alien fallbacks). Installed 2026-10-22 after the TTS batch (2,319 lines, 0 failures). Actual credit use: 40,286 for the whole German run including samples; 85,660 credits remain on the Creator plan, enough for an English Will run (129,232 characters) if wanted. Slovi: "passt gut".
+
+## Published (2026-10-22, both hidden until Slovi sets visibility)
+- **Steam Workshop DE:** item **3824406333**, folder `ws_3824406333`, Will voice, version 102. **Subscription test passed** (Slovi, 2026-10-22: "alles ok"). Visibility still hidden; Slovi sets it public on the item page.
+- **Steam Workshop EN:** item **3824446410**, folder `ws_3824446410`, Alien EN (+4 dB), version 101, created XML-only then updated with audio. Two earlier creation attempts timed out (Steam error 16); check "Your Workshop files" for stray empty items and delete them if any exist.
+- **ModDB package:** `build/moddb_package/` – both ZIPs (DE 94 MB, EN 59 MB), `logo_800x800.jpg`, three screenshots (two previews, Slovi's own in-game shot), description as .md and .txt, `README_UPLOAD.txt` with the form fields. Not uploaded yet; needs Slovi's ModDB account. No images from third-party sites were used.
+- Local game folder: all `bosota_*` extensions removed so the Workshop subscription can be tested cleanly. Subscribing installs the item into the game folder as `extensions\ws_3824406333\` (`content.xml`, `ext_01.cat`, `ext_01.dat`; checked 2026-10-26). Remove `-voicelanguage 44` from the launch options first.
+- Staging copies: `build/workshop/stage2` (DE), `build/workshop/stage2_en` and `%LOCALAPPDATA%\x4mod_workshop` (EN); previews `build/workshop/preview_DE.jpg`, `preview_EN.jpg`; procedure `docs/RELEASE.md`; patch procedure `docs/MAINTENANCE.md`; coverage indexes under `build/index/`.
+
+## Done
+- German variant `alien`: `d12_alien_mid` + 9 dB (one octave down, formants shifted, frequency shift −70 Hz, chorus, mid-range focus 220 Hz–5.5 kHz with +4 dB at 1.4 kHz and +2 dB at 2.8 kHz, gentle compression), `is3d="0"` on both conversation entries, `noocclusion="true"` on five entries. Slovi: "that works now, I can start a new game without being annoyed by Boso".
+- English variant `alien_en`: same chain at half strength (6 semitones, −35 Hz, half chorus), full mid-range focus, +4 dB.
+- Pipeline: `x4cat_extract.py` → `process_audio.py` (ffmpeg/Rubberband, two-pass loudness to −22 LUFS, optional gain with limiter) → `build_mod.py` (redirect diff plus attribute patches) → `validate_mod.py` → `install_mod.py` (refuses to run while `X4.exe` is open).
+- Workshop preparation: staging copies in `build/workshop/stage1/extensions/bosota_voice_alien` (DE) and `build/workshop/stage1_en/extensions/bosota_voice_alien_en` (EN), preview image `build/workshop/preview.jpg`, X Tools installed at `C:\Steam\steamapps\common\X Tools`.
+- Documentation rewritten in English (README, HOW-IT-WORKS, phase0-findings, these project files, LESSONS, CLAUDE.md). The original German handoff is kept as the source document.
+
+## New direction (2026-10-22, later the same day): complete new voice for German via text-to-speech
+- Speech-to-speech (ElevenLabs Voice Changer) was tried with all 21 premade voices on one line: rejected by Slovi, every result carried the original actor's Saxon colouring. Text-to-speech from the game texts avoids it; lip sync is explicitly unimportant to Slovi.
+- Texts: page 10201 of `t/0001-l049.xml` holds every line under the same id as the audio file; stage directions in parentheses are stripped. 2,319 of 2,324 lines have text (183,227 characters); alternate takes `…fp` reuse the base text; 5 ids without text (10417, 10603, 30226001–3) keep the previous Alien audio.
+- Choice: voice **Will** (`bIHbv24MWmeRgasZH58o`), model **Eleven v4 Turbo** (0.5 credits per character), post-processing `will_dark` (−4 semitones formants shifted, +4 dB low shelf 220 Hz, −4 dB high shelf 4 kHz), sample `7_will_minus4_warm_v4_turbo.wav`. English stays on the existing Alien variant.
+- Account: Creator plan, 125,946 credits at start; need ≈ 92,000. Key file `%USERPROFILE%\.elevenlabs_key`; the first key was exposed in chat and must be rotated.
+- Tooling: `tools/voice_convert_elevenlabs.py` (`quota`, `voices`, `convert`, `tts`, `tts-batch`, resumable), venv `build/venv` with requests. Batch run started into `build/tts/will_de/` (log `build/tts_will_de.log`).
+
+## Open
+- Possible follow-up, decision pending: replace all 15 Boron voice sets (10201–10205 generic, 10251–10260 mission characters). Counted 2026-10-22: remaining 3,044 DE lines / 151,466 characters and 3,014 EN lines / 120,639 characters, ≈ 60,000 credits for both languages, half a day of tooling (multi-page support in config/build/coverage, no 2D for generic pilots) plus 2–3 hours of voice selection by Slovi. Slovi first checks in a new save how annoying the other Boron voices are.
+- Workshop versions: modpub's upload of 2026-10-24 left DE at 103 and EN at 102 (`release/out/workshop/<lang>/content.xml`), while `config/variants.json` still says 102 and 101. The next manual upload needs DE ≥ 104, EN ≥ 103.
+- User texts still claim that mods cost Steam achievements (`docs/HOW-IT-WORKS.md`, `docs/release/MODDB_DESCRIPTION.md`, `release/out/text/*`, the Workshop descriptions). Player reports say achievements still unlock; only Ventures are blocked. README corrected 2026-10-25; the others wait for Slovi's decision.
+- Known installer limits, documented in `book/13-failure-modes.md`: `ws_*` folders are neither removed nor overwritten (`FileExistsError`), and the old `bosota_*` folder is removed before the audio check.
+- Set Workshop visibility; ModDB upload of the packaged folders, if Slovi decides to publish.
+- Optional: separate radio-filtered set for the comm contexts; code comments in `tools/` are still German.
+
+## Decisions
+- Engine effects (plan A) rejected: pitch is resampling, Slovi could not perceive −3 semitones and still found −9 unpleasant.
+- AI voice conversion (ElevenLabs, RVC) presented and not chosen; ffmpeg processing with listening rounds was sufficient.
+- Conversations play in 2D because head orientation changed loudness from 90 % to 60 % of Karee's and destroyed intelligibility.
+- All six contexts point at the processed `normal` set; the original radio filter of the comm files is dropped.
+- One variant per voice language, because the redirect path is language independent.
+
+## Known risks
+- The Boron faction representative shares the voice set and gets the new voice.
+- Background chatter (`normal_npc`) is 2D and therefore equally loud everywhere on the platform.
+- Levels are limiter-bound (peaks at −0.3 to −1.5 dBTP); further gain would be audible.
+- Publishing processed Egosoft audio is a grey area; the repository deliberately contains none.
+
+## Codebase book (2026-10-25)
+`book/` holds a reference book of the repository (16 chapters, quizzes, final exam). Chapters 00, 04, 05, 08 and 13 went through a three-stage review (`*.review.md` next to them). Writing it found and fixed: the installer copied no audio since clean-up `e5a7438` (now always copies and checks first), control characters in `config/variants.json`, stale help text in `tools/voice_convert_elevenlabs.py`, wrong catalog (`01.cat` instead of `03.cat`) and a wrong `-I` description in README and `init.sh`. After the move out of OneDrive, `build/venv` still works (checked 2026-10-26: `python.exe`, `requests`, `python -m pip`); only launchers such as `pip.exe` may still carry the old path, so call `build\venv\Scripts\python.exe -m pip`.
+
+## Next sensible step
+Slovi decides on the remaining user texts (achievements), sets the Workshop items public and uploads to ModDB.
+
+## Evidence
+- `python -I tools/validate_mod.py` → 0 errors in 4 extensions (2026-10-22)
+- `build/process_*.log` → every full run "0 Fehler"
+- Slovi's listening verdicts, recorded per round in `docs/dev-team/LESSONS.md`

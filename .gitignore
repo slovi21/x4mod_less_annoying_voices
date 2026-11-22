@@ -1,0 +1,15 @@
+# Build-Zwischenstände (extrahierte Spieldateien, nicht verteilen)
+build/
+__pycache__/
+*.pyc
+# Diagnose-Audio liegt nur im Spielordner, nie im Repo
+diag/**/voice*/
+# Lokale, maschinenspezifische Angaben fuer Claude, nie im Repo
+CLAUDE.local.md
+# API-Schluessel liegen nie im Repo
+*.key
+.elevenlabs_key
+release/assets/
+release/out/*
+!release/out/text/
+!release/out/status.json
